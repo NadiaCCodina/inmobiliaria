@@ -1,0 +1,81 @@
+﻿@model inmobiliaria.Models.Inquilino
+
+@{
+	ViewData["Title"] = "Busqueda";
+}
+
+<h1>Busqueda</h1>
+
+<h4>Inquilino</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form id="form_buscar">
+			<div class="form-group">
+				<label for="q" class="control-label"></label>
+				<input name="q" class="form-control" placeholder="Nombre a buscar" id="q" />
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Buscar" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
+<div>
+	<table>
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Apellido</th>
+			</tr>
+		</thead>
+		<tbody id="resultado">
+		</tbody>
+	</table>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+<table id="tablaResultados" class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyResultados">
+  
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelector("#form_buscar").addEventListener("submit", (e) => {
+            e.preventDefault(); 
+            var q = $("#q").val(); 
+            $.get(`@Url.Action("Buscar", "Inquilino")/${q}`).done((res) => {
+           
+                $("#tbodyResultados").empty();
+         
+                if (res.datos && res.datos.length > 0) {
+               
+                    res.datos.forEach((element) => {
+                        var row = $("<tr>");
+                        row.append(`<td>${element.id}</td>`);
+                        row.append(`<td>${element.nombre}</td>`);
+                        row.append(`<td>${element.email}</td>`);
+                        $("#tbodyResultados").append(row);
+                    });
+                } else {
+                  
+                    $("#tbodyResultados").append("<tr><td colspan='3'>No se encontraron resultados.</td></tr>");
+                }
+            }).fail((err) => {
+                console.error("Error al realizar la búsqueda: ", err);
+            });
+            return false;
+        });
+    </script>
+}

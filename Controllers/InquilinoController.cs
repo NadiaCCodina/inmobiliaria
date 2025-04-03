@@ -12,22 +12,22 @@ using Microsoft.Extensions.Configuration;
 namespace inmobiliaria.Controllers
 {
 
-	public class PropietarioController : Controller
+	public class InquilinoController : Controller
 	{
 
 		// Sin inyección de dependencias (crear dentro del ctor)
-		//private readonly RepositorioPropietario repositorio;
+		//private readonly RepositorioInquilino repositorio;
 
 		// Con inyección de dependencias (pedir en el ctor como parámetro)
-		private readonly RepositorioPropietario repositorio;
+		private readonly RepositorioInquilino repositorio;
 		private readonly IConfiguration config;
 
-		public PropietarioController()
+		public InquilinoController()
 		{
 			// Sin inyección de dependencias y sin usar el config (quitar el parámetro repo del ctor)
-			this.repositorio = new RepositorioPropietario();
+			this.repositorio = new RepositorioInquilino();
 			// Sin inyección de dependencias y pasando el config (quitar el parámetro repo del ctor)
-			//this.repositorio = new RepositorioPropietario(config);
+			//this.repositorio = new RepositorioInquilino(config);
 			// Con inyección de dependencias
 			//this.repositorio = repo;
 			//this.config = config;
@@ -55,7 +55,7 @@ namespace inmobiliaria.Controllers
 			}
 		}
 
-		// GET: Propietario/Create
+		// GET: Inquilino/Create
 		public ActionResult Create()
 		{
 			try
@@ -70,24 +70,24 @@ namespace inmobiliaria.Controllers
 
 
 		[HttpPost]
-		public ActionResult Create(Propietario propietario)
+		public ActionResult Create(Inquilino inquilino)
 		{
 			try
 			{
 				if (!ModelState.IsValid)// Pregunta si el modelo es válido
 				{
-					repositorio.Alta(propietario);
+					repositorio.Alta(inquilino);
 					return RedirectToAction(nameof(Index));
 				}
 				else
-					return View(propietario);
+					return View(inquilino);
 			}
 			catch (Exception ex)
 			{//poner breakpoints para detectar errores
 				throw;
 			}
 		}
-		// GET: Propietario/Delete/5
+		// GET: Inquilino/Delete/5
 		public ActionResult Eliminar(int id)
 		{
 			try
@@ -103,7 +103,7 @@ namespace inmobiliaria.Controllers
 
 		[HttpPost]
 
-		public ActionResult Eliminar(int id, Propietario entidad)
+		public ActionResult Eliminar(int id, Inquilino entidad)
 		{
 			try
 			{
@@ -117,7 +117,7 @@ namespace inmobiliaria.Controllers
 			}
 		}
 
-		// GET: Propietario/Edit/5
+	// GET: Inquilino/Edit/5
 		public ActionResult Edit(int id)
 		{
 			try
@@ -131,17 +131,17 @@ namespace inmobiliaria.Controllers
 			}
 		}
 
-		// POST: Propietario/Edit/5
+		// POST: Inquilino/Edit/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		//public ActionResult Edit(int id, IFormCollection collection)
-		public ActionResult Edit(int id, Propietario entidad)
+		public ActionResult Edit(int id, Inquilino entidad)
 		{
-			// Si en lugar de IFormCollection ponemos Propietario, el enlace de datos lo hace el sistema
-			Propietario p = null;
+			// Si en lugar de IFormCollection ponemos Inquilino, el enlace de datos lo hace el sistema
+			Inquilino i = null;
 			try
 			{
-				p = repositorio.ObtenerPorId(id);
+				i = repositorio.ObtenerPorId(id);
 				// En caso de ser necesario usar: 
 				//
 				//Convert.ToInt32(collection["CAMPO"]);
@@ -151,12 +151,12 @@ namespace inmobiliaria.Controllers
 				//decimal.Parse(collection["CAMPO"]);
 				//DateTime.Parse(collection["CAMPO"]);
 				////////////////////////////////////////
-				p.Nombre = entidad.Nombre;
-				p.Apellido = entidad.Apellido;
-				p.Dni = entidad.Dni;
-				p.Email = entidad.Email;
-				p.Telefono = entidad.Telefono;
-				repositorio.Modificacion(p);
+				i.Nombre = entidad.Nombre;
+				i.Apellido = entidad.Apellido;
+				i.Dni = entidad.Dni;
+				i.Email = entidad.Email;
+				i.Telefono = entidad.Telefono;
+				repositorio.Modificacion(i);
 				TempData["Mensaje"] = "Datos guardados correctamente";
 				return RedirectToAction(nameof(Index));
 			}
@@ -177,7 +177,7 @@ namespace inmobiliaria.Controllers
 			}
 		}
 
-		[Route("[controller]/Buscar/{q}", Name = "Buscar")]
+		[Route("[controller]/Buscar/{q}", Name = "BuscarInquilino")]
 		public ActionResult Buscar(string q)
 		{
 			try
@@ -196,7 +196,7 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				var entidad = repositorio.ObtenerPorId(id);
-				return View();//¿qué falta?
+				return View(entidad);//¿qué falta?
 			}
 			catch (Exception ex)
 			{//poner breakpoints para detectar errores

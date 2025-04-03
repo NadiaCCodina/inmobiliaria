@@ -10,7 +10,7 @@ namespace inmobiliaria.Models
 	{
 		[Key]
 		[Display(Name = "Código")]
-		public int InquilinoId { get; set; }
+		public int Id { get; set; }
 		[Required]
 		public string Nombre { get; set; }
 		[Required]
