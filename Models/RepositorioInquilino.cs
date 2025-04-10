@@ -6,17 +6,17 @@ using MySql.Data.MySqlClient;
 namespace inmobiliaria.Models
 {
 
-public class RepositorioInquilino :RepositorioBase
-{
+	public class RepositorioInquilino : RepositorioBase
+	{
 
 		public RepositorioInquilino() : base()
 		{
 			//https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
 		}
-    public int Alta(Inquilino i)
-    {
-     int res = -1;
-	MySqlConnection conn = ObtenerConexion();
+		public int Alta(Inquilino i)
+		{
+			int res = -1;
+			MySqlConnection conn = ObtenerConexion();
 			{
 				string sql = @"INSERT INTO Inquilino 
 					(Nombre, Apellido, Dni, Telefono, Email) 
@@ -28,9 +28,9 @@ public class RepositorioInquilino :RepositorioBase
 					command.Parameters.AddWithValue("@nombre", i.Nombre);
 					command.Parameters.AddWithValue("@apellido", i.Apellido);
 					command.Parameters.AddWithValue("@dni", i.Dni);
-					command.Parameters.AddWithValue("@telefono", i.Telefono);		
+					command.Parameters.AddWithValue("@telefono", i.Telefono);
 					command.Parameters.AddWithValue("@email", i.Email);
-				
+
 					res = Convert.ToInt32(command.ExecuteScalar());
 					i.Id = res;
 				
@@ -41,7 +41,7 @@ public class RepositorioInquilino :RepositorioBase
 		public int Baja(int id)
 		{
 			int res = -1;
-				MySqlConnection conn = ObtenerConexion();
+			MySqlConnection conn = ObtenerConexion();
 			{
 				string sql = @$"DELETE FROM Inquilino WHERE {nameof(Inquilino.Id)} = @id";
 				using (var command = new MySqlCommand(sql, conn))
@@ -49,17 +49,17 @@ public class RepositorioInquilino :RepositorioBase
 					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@id", id);
 					res = command.ExecuteNonQuery();
-				
+
 				}
 			}
 			return res;
 		}
 
 
-	public int Modificacion(Inquilino i)
+		public int Modificacion(Inquilino i)
 		{
 			int res = -1;
-				MySqlConnection conn = ObtenerConexion();
+			MySqlConnection conn = ObtenerConexion();
 			{
 				string sql = @$"UPDATE Inquilino
 					SET Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email
@@ -74,7 +74,7 @@ public class RepositorioInquilino :RepositorioBase
 					command.Parameters.AddWithValue("@email", i.Email);
 					command.Parameters.AddWithValue("@id", i.Id);
 					res = command.ExecuteNonQuery();
-					
+
 				}
 			}
 			return res;
@@ -92,7 +92,7 @@ public class RepositorioInquilino :RepositorioBase
 				using (var command = new MySqlCommand(sql, conn))
 				{
 					command.CommandType = CommandType.Text;
-					
+
 					var reader = command.ExecuteReader();
 					while (reader.Read())
 					{
@@ -104,20 +104,20 @@ public class RepositorioInquilino :RepositorioBase
 							Dni = reader.GetString("Dni"),
 							Telefono = reader.GetString("Telefono"),
 							Email = reader.GetString("Email"),
-							
+
 						};
 						res.Add(i);
 					}
-					
+
 				}
 			}
 			return res;
 		}
 
-			 public Inquilino ObtenerPorId(int id)
+		public Inquilino ObtenerPorId(int id)
 		{
 			Inquilino? i = null;
-		MySqlConnection conn = ObtenerConexion();
+			MySqlConnection conn = ObtenerConexion();
 			{
 				string sql = @"SELECT 
 					Id, Nombre, Apellido, Dni, Telefono, Email
@@ -127,7 +127,7 @@ public class RepositorioInquilino :RepositorioBase
 				{
 					command.Parameters.AddWithValue("@id", id);
 					command.CommandType = CommandType.Text;
-				
+
 					var reader = command.ExecuteReader();
 					if (reader.Read())
 					{
@@ -139,10 +139,10 @@ public class RepositorioInquilino :RepositorioBase
 							Dni = reader.GetString("Dni"),
 							Telefono = reader.GetString("Telefono"),
 							Email = reader.GetString("Email"),
-						
+
 						};
 					}
-					
+
 				}
 			}
 			return i;
@@ -154,7 +154,7 @@ public class RepositorioInquilino :RepositorioBase
 			List<Inquilino> res = new List<Inquilino>();
 			Inquilino? i = null;
 			nombre = "%" + nombre + "%";
-		
+
 			{
 				string sql = @"SELECT
 					Id, Nombre, Apellido, Dni, Telefono, Email 
@@ -164,7 +164,7 @@ public class RepositorioInquilino :RepositorioBase
 				{
 					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@nombre", nombre);
-					
+
 					var reader = command.ExecuteReader();
 					while (reader.Read())
 					{
@@ -176,15 +176,15 @@ public class RepositorioInquilino :RepositorioBase
 							Dni = reader.GetString("Dni"),
 							Telefono = reader.GetString("Telefono"),
 							Email = reader.GetString("Email"),
-							
+
 						};
 						res.Add(i);
 					}
-				
+
 				}
 			}
 			return res;
 		}
-		
-}
+
+	}
 }

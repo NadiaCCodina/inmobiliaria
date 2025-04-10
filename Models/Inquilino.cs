@@ -20,5 +20,18 @@ namespace inmobiliaria.Models
 		public string Telefono { get; set; }
 		[Required, EmailAddress]
 		public string Email { get; set; }
-	}
+	
+	   public override string ToString()
+        {
+            //return $"{Apellido}, {Nombre}";
+            //return $"{Nombre} {Apellido}";
+            var res = $"{Nombre} {Apellido}";
+            if (!String.IsNullOrEmpty(Dni))
+            {
+                res += $" ({Dni})";
+            }
+            return res;
+        }
+    }
 }
+

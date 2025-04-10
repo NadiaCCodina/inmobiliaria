@@ -34,7 +34,7 @@ namespace inmobiliaria.Models
 
 					res = Convert.ToInt32(command.ExecuteScalar());
 					p.Id = res;
-					CerrarConexion(conn);
+				
 				}
 			}
 			return res;

@@ -40,7 +40,7 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				//var lista = repositorio.ObtenerTodos();
-				var lista = repositorio.ObtenerLista(Math.Max(pagina, 1), 5);
+				var lista = repositorio.ObtenerLista(Math.Max(pagina, 1), 10);
 				ViewBag.Id = TempData["Id"];
 				// TempData es para pasar datos entre acciones
 				// ViewBag/Data es para pasar datos del controlador a la vista
@@ -74,7 +74,7 @@ namespace inmobiliaria.Controllers
 		{
 			try
 			{
-				if (!ModelState.IsValid)// Pregunta si el modelo es válido
+				if (ModelState.IsValid)// Pregunta si el modelo es válido
 				{
 					repositorio.Alta(propietario);
 					return RedirectToAction(nameof(Index));

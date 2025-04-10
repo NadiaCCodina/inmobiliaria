@@ -74,7 +74,7 @@ namespace inmobiliaria.Controllers
 		{
 			try
 			{
-				if (!ModelState.IsValid)// Pregunta si el modelo es válido
+				if (ModelState.IsValid)// Pregunta si el modelo es válido
 				{
 					repositorio.Alta(inquilino);
 					return RedirectToAction(nameof(Index));

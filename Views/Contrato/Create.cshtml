@@ -1,0 +1,49 @@
+@model inmobiliaria.Models.Contrato
+
+@{
+	ViewData["Title"] = "Create";
+	//ViewBag.Title = "Create";
+	var ltaInquilinos = (IList<Inquilino>)ViewBag.Inquilino;
+	var ltaInmuebles = (IList<Inmueble>)ViewBag.Inmueble;
+}
+
+<h1>Create</h1>
+
+<h4>Contrato</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Create">
+
+			<div class="form-group">
+				<label class="control-label">Inquilino</label>
+				<select class="form-control" name="InquilinoId">
+					@foreach (var item in ltaInquilinos)
+					{
+						<option value="@item.Id">@(item.ToString())</option>
+					}
+				</select>
+				<span asp-validation-for="InmuebleId" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label class="control-label">Inmueble</label>
+				<select class="form-control" name="InmuebleId">
+					@foreach (var item in ltaInquilinos)
+					{
+						<option value="@item.Id">@(item.ToString())</option>
+					}
+				</select>
+				<span asp-validation-for="InmuebleId" class="text-danger"></span>
+			</div>
+
+
+		
+		
+			
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-primary" />
+				<a class="btn btn-secondary" asp-action="Index">Back to List</a>
+			</div>
+		</form>
+	</div>
+</div>
