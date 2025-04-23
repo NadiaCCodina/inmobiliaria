@@ -67,7 +67,7 @@
                           class="btn btn-danger" >Eliminar</span></a>
                     <a asp-action="PorPropietario" asp-controller="Inmuebles" asp-route-id="@item.Id"
                         title="Mis Propiedades"><span class="lnr lnr-apartment"></span></a>
-                    @Html.ActionLink("Mis Propiedades", "PorPropietario", "Inmuebles", new { id = item.Id })
+                    @Html.ActionLink("Mis Propiedades", "porPropietario", "Inmueble", new { id = item.Id })
                 </td>
             </tr>
         }

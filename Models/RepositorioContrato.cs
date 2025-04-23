@@ -12,7 +12,44 @@ namespace inmobiliaria.Models
             //https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/
         }
 
-        public int Alta(Contrato entidad)
+        // public Inmueble controlFechas(DateTime fechaI, DateTime fechaF){
+        //       IList<Inmueble> res = new List<Inmueble>();
+        //       MySqlConnection conn = ObtenerConexion();
+        //       {
+        //           string sql= @"       SELECT i.Id, i.Direccion, i.precio
+        //                           FROM inmueble i
+        //                           WHERE NOT EXISTS (
+        //                           SELECT 1
+        //                           FROM contrato c
+        //                           WHERE c.IdInmueble = i.Id
+        //           AND (
+        //                 (@fechaI BETWEEN FechaInicio AND FechaFin)
+        //                 OR (@fechaF BETWEEN FechaInicio AND FechaFin)
+        //                 OR (FechaInicio BETWEEN @fechaI AND @fechaF)
+        //                 OR (FechaFin BETWEEN  @fechaI AND @fechaF)
+        //             );";
+        //             using (var command = new MySqlCommand(sql, conn))
+        //             {
+        //             command.CommandType = CommandType.Text;
+		// 			command.Parameters.AddWithValue("@fechaF", fechaF);
+        //             command.Parameters.AddWithValue("@fechaI", fechaI);
+        //             var reader = command.ExecuteReader();
+		// 			while (reader.Read())
+		// 			{
+		// 				Inmueble i = new Inmueble{
+        //                 Id = reader.GetInt32(0),
+		// 				Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString("Direccion"),
+        //                 Precio = reader.GetInt32(2),
+        //                 };
+        //                 res.Add(i);
+        //             }
+        //       }
+             
+        // }
+        //  return res;
+        // }
+
+        public int Alta(Contrato entidad, decimal monto)
         {
             int res = -1;
             MySqlConnection conn = ObtenerConexion();
@@ -26,7 +63,8 @@ namespace inmobiliaria.Models
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@inquilinoId", entidad.InquilinoId);
                     command.Parameters.AddWithValue("@inmuebleId", entidad.InmuebleId);
-                    command.Parameters.AddWithValue("@monto", entidad.Monto);
+                    command.Parameters.AddWithValue("@monto", monto);
+                     command.Parameters.AddWithValue("@fechaInicio", entidad.FechaInicio);
                     command.Parameters.AddWithValue("@fechaFin", entidad.FechaFin);
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res;
@@ -37,6 +75,8 @@ namespace inmobiliaria.Models
 
 
         }
+
+
         public IList<Contrato> ObtenerTodos()
         {
             IList<Contrato> res = new List<Contrato>();

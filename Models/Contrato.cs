@@ -19,9 +19,9 @@ namespace inmobiliaria.Models
 		public int InmuebleId { get; set; }
 		[ForeignKey(nameof(InmuebleId))]
 		public decimal Monto { get; set; }
-		[Required]
+		//[Required]
 	    public DateTime FechaInicio { get; set; }
-        [Required]
+        //[Required]
         public DateTime FechaFin { get; set; }
 		public Inquilino? Inqui { get; set; }
       

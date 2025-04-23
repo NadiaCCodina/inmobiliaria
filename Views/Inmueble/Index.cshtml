@@ -1,50 +1,69 @@
 @model IEnumerable<inmobiliaria.Models.Inmueble>
 
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
+	var ltaPropietario = (IList<Propietario>)ViewBag.Propietario;
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+	<a asp-action="Create">Create New</a>
 </p>
+<div class="form-group">
+	<label class="control-label">Propietario</label>
+
+	@* <select class="Inquilino form-control" name="InquilinoId">
+				
+				</select> *@
+
+	<select id="propietarioSelect" class="form-control" name="propietarioId">
+		@foreach (var item in ltaPropietario)
+		{
+			<option value="@item.Id">@(item.ToString())</option>
+		}
+	</select>
+	@* <span asp-validation-for="InmuebleId" class="text-danger"></span> *@
+	<button class="btn btn-primary" onclick="buscarPorPropietario()">Busqueda</button>
+</div>
+
+
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Direccion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ambientes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Superficie)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Latitud)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitud)
-            </th>
-			 <th>
-                @Html.DisplayNameFor(model => model.Uso)
-            </th>
-			 <th>
-                @Html.DisplayNameFor(model => model.Tipo)
-            </th>
-			 <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PropietarioId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Id)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Direccion)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Ambientes)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Superficie)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Latitud)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Longitud)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Uso)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Tipo)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Precio)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.PropietarioId)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
 	<tbody>
 		@foreach (var item in Model)
 		{
@@ -81,12 +100,25 @@
 					@item.Duenio.ToString()
 				</td>
 				<td>
-					  <a asp-action="Edit" asp-route-id="@item.Id" title="Editar"><span
-                            class="btn btn-primary">Editar</span></a>&nbsp;
-                    <a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span
-                          class="btn btn-danger" >Eliminar</span></a>
+					<a asp-action="Edit" asp-route-id="@item.Id" title="Editar"><span
+							class="btn btn-primary">Editar</span></a>&nbsp;
+					<a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span
+							class="btn btn-danger">Eliminar</span></a>
+					<a asp-action="create" asp-controller= "Contrato" asp-route-id="@item.Id" title="Contrato"><span
+							class="btn btn-success">Crear contrato</span></a>
 				</td>
 			</tr>
-			}
-		</tbody>
+		}
+	</tbody>
 </table>
+
+@section Scripts {
+	<script>
+		function buscarPorPropietario() {
+			var propietarioId = document.getElementById('propietarioSelect').value;
+			if (propietarioId) {
+				window.location.href = '/Inmueble/porPropietario/' + propietarioId;
+			}
+		}
+	</script>
+}

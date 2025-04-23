@@ -16,7 +16,7 @@ namespace inmobiliaria.Controllers
 	{
 		private readonly RepositorioInmueble repositorio;
 		private readonly RepositorioPropietario repoPropietario;
-		private RepositorioPropietario? repoPropietrio;
+		private RepositorioPropietario? repoPropietari;
 
 		public InmuebleController()
 		{
@@ -28,6 +28,7 @@ namespace inmobiliaria.Controllers
 		public ActionResult Index(int pagina = 1)
 		{
 			var lista = repositorio.ObtenerTodos();
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			if (TempData.ContainsKey("Id"))
 				ViewBag.Id = TempData["Id"];
 			if (TempData.ContainsKey("Mensaje"))
@@ -37,13 +38,14 @@ namespace inmobiliaria.Controllers
 
 		public ActionResult PorPropietario(int id)
 		{
-			var lista = repositorio.ObtenerTodos();//repositorio.ObtenerPorPropietario(id);
-			if (TempData.ContainsKey("Id"))
-				ViewBag.Id = TempData["Id"];
-			if (TempData.ContainsKey("Mensaje"))
-				ViewBag.Mensaje = TempData["Mensaje"];
-			ViewBag.Id = id;
+			var lista = repositorio.BuscarPorPropietario(id);
+			// if (TempData.ContainsKey("Id"))
+			// 	ViewBag.Id = TempData["Id"];
+			// if (TempData.ContainsKey("Mensaje"))
+			// 	ViewBag.Mensaje = TempData["Mensaje"];
+			// ViewBag.Id = id;
 			//ViewBag.Propietario = repoPropietario.
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			return View("Index", lista);
 		}
 
@@ -69,7 +71,7 @@ namespace inmobiliaria.Controllers
 		{
 			try
 			{
-				if (!ModelState.IsValid)
+				if (ModelState.IsValid)
 				{
 					repositorio.Alta(entidad);
 					//TempData["Id"] = entidad.Id;

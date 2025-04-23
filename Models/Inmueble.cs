@@ -29,7 +29,16 @@ namespace inmobiliaria.Models
 		public string? Tipo { get; set; }
 		[Required]
 		public int Precio { get; set; }
-		[Required]
+	
 		public Propietario? Duenio { get; set; }
+
+		 public override string ToString()
+        {
+            //return $"{Apellido}, {Nombre}";
+            //return $"{Nombre} {Apellido}";
+            var res = $"Direccion: {Direccion} Precio: {Precio}";
+           
+            return res;
+        }
 	}
 }
