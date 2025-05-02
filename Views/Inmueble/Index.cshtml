@@ -3,28 +3,71 @@
 @{
 	ViewData["Title"] = "Index";
 	var ltaPropietario = (IList<Propietario>)ViewBag.Propietario;
+	
+	   var msj = TempData["Mensaje"] as string;
+		
+		
 }
 
 <h1>Index</h1>
+@if (!string.IsNullOrEmpty(msj))
+{
+    <p class="alert alert-info">@msj</p>
+}
 
 <p>
-	<a asp-action="Create">Create New</a>
+
 </p>
-<div class="form-group">
-	<label class="control-label">Propietario</label>
+<p>
+	<a asp-action="Create">Create New</a>
 
-	@* <select class="Inquilino form-control" name="InquilinoId">
-				
-				</select> *@
+</p><div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <strong>Filtros de búsqueda</strong>
+    </div>
+    <div class="card-body">
+        <form class="row g-3 justify-content-center">
+            <div class="col-md-3">
+                <label class="form-label">Por Ambientes</label>
+                <select id="ambientesSelect" class="form-select" name="ambientes">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+                <button type="button" class="btn btn-outline-primary mt-2 w-100" onclick="buscarPorAmbientes()">Buscar</button>
+            </div>
+			  <div class="col-md-3">
+                <label class="form-label">Por Tipo</label>
+                <select id="tipoSelect" class="form-select" name="tipo">
+                    <option value="Departamento">Departamento</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Local">Local</option>
+                    <option value="Galpon">Galpon</option>
+                </select>
+                <button type="button" class="btn btn-outline-primary mt-2 w-100" onclick="buscarPorTipo()">Buscar</button>
+            </div>
 
-	<select id="propietarioSelect" class="form-control" name="propietarioId">
-		@foreach (var item in ltaPropietario)
-		{
-			<option value="@item.Id">@(item.ToString())</option>
-		}
-	</select>
-	@* <span asp-validation-for="InmuebleId" class="text-danger"></span> *@
-	<button class="btn btn-primary" onclick="buscarPorPropietario()">Busqueda</button>
+            <div class="col-md-3">
+                <label class="form-label">Por Propietario</label>
+                <select id="propietarioSelect" class="form-select" name="propietarioId">
+                    @foreach (var item in ltaPropietario)
+                    {
+                        <option value="@item.Id">@item.ToString()</option>
+                    }
+                </select>
+                <button type="button" class="btn btn-outline-primary mt-2 w-100" onclick="buscarPorPropietario()">Buscar</button>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha Inicio</label>
+                <input id="fechaInicioSelect" type="date" class="form-control" />
+                <label class="form-label mt-2">Fecha Fin</label>
+                <input id="fechaFinSelect" type="date" class="form-control" />
+                <button type="button" class="btn btn-outline-primary mt-2 w-100" onclick="buscarPorFecha()">Buscar</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 
@@ -61,6 +104,12 @@
 			<th>
 				@Html.DisplayNameFor(model => model.PropietarioId)
 			</th>
+			<th>
+				Fecha
+			</th>
+			     <th>
+               Ultimo Contrato
+            </th>
 			<th></th>
 		</tr>
 	</thead>
@@ -100,17 +149,25 @@
 					@item.Duenio.ToString()
 				</td>
 				<td>
+					@Html.DisplayFor(modelItem => item.ContratoInmueble.FechaInicio)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.ContratoInmueble.FechaFin)
+				</td>
+				<td>
 					<a asp-action="Edit" asp-route-id="@item.Id" title="Editar"><span
 							class="btn btn-primary">Editar</span></a>&nbsp;
 					<a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span
 							class="btn btn-danger">Eliminar</span></a>
-					<a asp-action="create" asp-controller= "Contrato" asp-route-id="@item.Id" title="Contrato"><span
+					<a asp-action="create" asp-controller="Contrato" asp-route-id="@item.Id" title="Contrato"><span
 							class="btn btn-success">Crear contrato</span></a>
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+
+
 
 @section Scripts {
 	<script>
@@ -120,5 +177,29 @@
 				window.location.href = '/Inmueble/porPropietario/' + propietarioId;
 			}
 		}
+		function buscarPorFecha() {
+			var fechaI = document.getElementById('fechaInicioSelect').value;
+			var fechaF = document.getElementById('fechaFinSelect').value;
+
+			if (fechaI && fechaF) {
+				window.location.href = '/Inmueble/porFechaContrato?fechaInicio=' + encodeURIComponent(fechaI) + '&fechaFin=' + encodeURIComponent(fechaF);
+			}
+		}
+		function buscarPorAmbientes() {
+			var ambientes = document.getElementById('ambientesSelect').value;
+			if (ambientes) {
+				window.location.href = '/Inmueble/porAmbiente?cantidad=' + ambientes;
+			}
+		}
+
+		function buscarPorTipo() {
+			var tipo = document.getElementById('tipoSelect').value;
+			if (tipo) {
+				window.location.href = '/Inmueble/porTipo?tipo=' + tipo;
+			}
+		}
+
 	</script>
+
+
 }

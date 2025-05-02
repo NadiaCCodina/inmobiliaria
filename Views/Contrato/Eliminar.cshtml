@@ -1,0 +1,53 @@
+﻿@using inmobiliaria.Models
+@model inmobiliaria.Models.Contrato
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Finalizar Contrato</h1>
+
+<h3>Esta seguro que quiere terminar este contrato?</h3>
+<div>
+    <h4>Contrato</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Monto)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Monto)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaInicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaInicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaFin)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaFin)
+        </dd>
+         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Inqui.Apellido)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Inqui.Apellido)
+        </dd>
+       
+ 
+    </dl>
+    
+    <form asp-action="Terminar">
+        <input type="submit" value="Terminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

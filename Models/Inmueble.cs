@@ -31,11 +31,11 @@ namespace inmobiliaria.Models
 		public int Precio { get; set; }
 	
 		public Propietario? Duenio { get; set; }
+		public Contrato? ContratoInmueble { get; set; }
 
 		 public override string ToString()
         {
-            //return $"{Apellido}, {Nombre}";
-            //return $"{Nombre} {Apellido}";
+          
             var res = $"Direccion: {Direccion} Precio: {Precio}";
            
             return res;

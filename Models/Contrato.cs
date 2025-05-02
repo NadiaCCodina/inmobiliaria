@@ -24,6 +24,7 @@ namespace inmobiliaria.Models
         //[Required]
         public DateTime FechaFin { get; set; }
 		public Inquilino? Inqui { get; set; }
+		public Inmueble? Inmue { get; set; }
       
  
 	}

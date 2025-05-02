@@ -2,8 +2,8 @@
 @model inmobiliaria.Models.Contrato
 
 @{
-	ViewData["Title"] = "Create";
-	ViewBag.Title = "Create";
+	ViewData["Title"] = "Edit";
+	ViewBag.Title = "Edit";
 	var ltaInquilinos = ViewBag.Inquilino;
 	var ltaInmuebles = ViewBag.Inmuebles;
 	var inmuebleId = ViewBag.Inmueble;
@@ -11,13 +11,13 @@
 }
 
 
-<h1>Create</h1>
+<h1>Editar</h1>
 
 <h4>Contrato</h4>
 <hr />
 <div class="row">
 	<div class="col-md-4">
-		<form asp-action="Create">
+		<form asp-action="Edit">
 
 
 			<div>
@@ -26,11 +26,15 @@
 				</select>
 			</div>
 
+   
+			<div class="form-group">
+				<label asp-for="Inqui.Nombre" class="control-label">Inquilino Actual</label>
+				<input asp-for="Inqui.Apellido"  class="form-control" />
+				
+			</div>
 
 
-
-			@if (ltaInmuebles != null)
-			{
+		
 				<div class="form-group">
 					<label class="control-label">Inmueble</label>
 					<select class="form-control" name="InmuebleId">
@@ -42,16 +46,13 @@
 					</select>
 					<span asp-validation-for="InmuebleId" class="text-danger"></span>
 				</div>
-			}
-			else if (inmuebleId != null)
-			{
-				var inmueble = (inmobiliaria.Models.Inmueble)inmuebleId;
-				<div class="form-group">
-					<label class="control-label">Inmueble Elegido</label>
-					<p class="form-control">@inmueble.ToString()</p>
-					<input type="hidden" name="InmuebleId" value="@inmueble.Id" />
-				</div>
-			}
+				
+	        
+			<div class="form-group">
+				<label asp-for="Inmue.Direccion" class="control-label">Direccion Actual</label>
+				<input asp-for="Inmue.Direccion"  class="form-control" />
+				
+			</div>
 
 			<div class="form-group">
 				<label asp-for="FechaInicio" class="control-label"></label>

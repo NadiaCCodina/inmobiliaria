@@ -17,11 +17,12 @@ namespace inmobiliaria.Controllers
 		private readonly RepositorioInmueble repositorio;
 		private readonly RepositorioPropietario repoPropietario;
 		private RepositorioPropietario? repoPropietari;
-
+        private readonly RepositorioContrato repoContrato;
 		public InmuebleController()
 		{
 			this.repositorio = new RepositorioInmueble();
 			this.repoPropietario = new RepositorioPropietario();
+			this.repoContrato = new RepositorioContrato();
 		}
 
 		// GET: Inmueble
@@ -36,9 +37,71 @@ namespace inmobiliaria.Controllers
 			return View(lista);
 		}
 
+		public ActionResult PorAmbiente(int cantidad)
+		{
+			
+			var lista = repositorio.BuscarPorAmbientes(cantidad);
+			// if (TempData.ContainsKey("Id"))
+			// 	ViewBag.Id = TempData["Id"];
+			// if (TempData.ContainsKey("Mensaje"))
+			// 	ViewBag.Mensaje = TempData["Mensaje"];
+			// ViewBag.Id = id;
+			//ViewBag.Propietario = repoPropietario.
+			if(lista != null && lista.Count > 0){
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
+			return View("Index", lista);}
+			else{
+				ViewBag.Propietario = repoPropietario.ObtenerLista();
+				var listaTodos = repositorio.ObtenerTodos();
+				TempData["Mensaje"] = "No se encontraron inmuebles.";
+			return View("Index", listaTodos);
+			}
+		}
+
+			public ActionResult porTipo(String tipo)
+		{
+			
+			var lista = repositorio.BuscarPorTipo(tipo);
+			// if (TempData.ContainsKey("Id"))
+			// 	ViewBag.Id = TempData["Id"];
+			// if (TempData.ContainsKey("Mensaje"))
+			// 	ViewBag.Mensaje = TempData["Mensaje"];
+			// ViewBag.Id = id;
+			//ViewBag.Propietario = repoPropietario.
+			if(lista != null && lista.Count > 0){
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
+			return View("Index", lista);}
+			else{
+
+				ViewBag.Propietario = repoPropietario.ObtenerLista();
+				var listaTodos = repositorio.ObtenerTodos();
+				TempData["Mensaje"] = "No se encontraron inmuebles.";
+			return View("Index", listaTodos);
+			}
+		}
+
+
 		public ActionResult PorPropietario(int id)
 		{
 			var lista = repositorio.BuscarPorPropietario(id);
+			// if (TempData.ContainsKey("Id"))
+			// 	ViewBag.Id = TempData["Id"];
+			// if (TempData.ContainsKey("Mensaje"))
+			// 	ViewBag.Mensaje = TempData["Mensaje"];
+			// ViewBag.Id = id;
+			//ViewBag.Propietario = repoPropietario.
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
+			return View("Index", lista);
+		}
+		
+		
+
+	public ActionResult PorFechaContrato(DateTime fechaInicio, DateTime fechaFin )
+		{
+			//var lista = repositorio.ObtenerTodos();
+			//DateTime fechaInicio= new DateTime(2025-04-15);
+			//DateTime fechaFin = new DateTime(2025-05-31);
+			var lista = repositorio.controlFechas(fechaInicio, fechaFin);
 			// if (TempData.ContainsKey("Id"))
 			// 	ViewBag.Id = TempData["Id"];
 			// if (TempData.ContainsKey("Mensaje"))

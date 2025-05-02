@@ -25,7 +25,7 @@ namespace inmobiliaria.Controllers
             this.repoInquilino = new RepositorioInquilino();
 		}
 
-        public ActionResult Index(int pagina = 1)
+        public ActionResult Index(int pagina = 1 )
 		{
 			var lista = repositorio.ObtenerTodos();
 			if (TempData.ContainsKey("Id"))
@@ -83,6 +83,7 @@ namespace inmobiliaria.Controllers
 			catch (Exception ex)
 			{
 				ViewBag.Error = ex.Message;
+
 				ViewBag.StackTrate = ex.StackTrace;
 				ViewBag.Inquilino = repoInquilino.ObtenerLista();
 				ViewBag.Inmueble = repoInmueble.ObtenerTodos();
@@ -90,8 +91,54 @@ namespace inmobiliaria.Controllers
 			}
 		}
 
+	public ActionResult Edit(int id)
+		{
+			
+			var entidad = repositorio.ObtenerPorId(id);
+		
+			ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+			ViewBag.Inquilino = repoInquilino.ObtenerLista();
+			ViewBag.Inmueble= repoInmueble.ObtenerPorId(entidad.InmuebleId);
+
+			if (TempData.ContainsKey("Mensaje"))
+				ViewBag.Mensaje = TempData["Mensaje"];
+			if (TempData.ContainsKey("Error"))
+				ViewBag.Error = TempData["Error"];
+			return View(entidad);
+		}
 
 	
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Edit(int id, Contrato entidad)
+		{
+			try
+			{
+				var precio= repoInmueble.ObtenerPorId(entidad.InmuebleId);
+				entidad.Id = id;
+				repositorio.Modificacion(entidad, precio.Precio);
+				TempData["Mensaje"] = "Datos guardados correctamente";
+				return RedirectToAction(nameof(Index));
+			}
+			 catch (Exception ex)
+			 {
+				
+			 	ViewBag.Error = ex.Message;
+			 	ViewBag.StackTrate = ex.StackTrace;
+			 	return View(entidad);
+			 }
+		}
+
+		public ActionResult Eliminar(int id)
+		{
+			var entidad = repositorio.ObtenerPorId(id);
+			if (TempData.ContainsKey("Mensaje"))
+				ViewBag.Mensaje = TempData["Mensaje"];
+			if (TempData.ContainsKey("Error"))
+				ViewBag.Error = TempData["Error"];
+			return View(entidad);
+		}
     }
 }
+
 

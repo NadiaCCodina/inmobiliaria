@@ -13,22 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Id
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Monto)
+              Monto
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaInicio)
+               Fecha Inicio
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaFin)
+               Fecha Finalización
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InquilinoId)
+               Inquilino
             </th>
               <th>
-                @Html.DisplayNameFor(model => model.InmuebleId)
+               Inmueble
             </th>
             <th></th>
         </tr>
@@ -53,11 +53,15 @@
 					<!-- @(item.Inqui.Nombre + " " + item.Inqui.Apellido) -->
 					@item.Inqui.ToString()
 				</td>
+                <td>
+					<!-- @(item.Inmue.Direccion) -->
+					@item.Inmue.ToString()
+				</td>
 				<td>
 					  <a asp-action="Edit" asp-route-id="@item.Id" title="Editar"><span
                             class="btn btn-primary">Editar</span></a>&nbsp;
                     <a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span
-                          class="btn btn-danger" >Eliminar</span></a>
+                          class="btn btn-danger" >Finalizar Contrato</span></a>
 				</td>
 			</tr>
 			}
