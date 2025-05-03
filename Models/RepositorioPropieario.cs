@@ -62,7 +62,7 @@ namespace inmobiliaria.Models
 			MySqlConnection conn = ObtenerConexion();
 			{
 				string sql = @$"
-					SELECT Id, Nombre, Apellido, Dni, Telefono, Email
+					SELECT Id, Direccion, Nombre, Apellido, Dni, Telefono, Email
 					FROM Propietario
 					LIMIT {tamPagina} OFFSET {(paginaNro - 1) * tamPagina}
 				";
@@ -76,6 +76,7 @@ namespace inmobiliaria.Models
 						Propietario p = new Propietario
 						{
 							Id = reader.GetInt32(nameof(Propietario.Id)),
+							Direccion = reader.GetString("Direccion"),
 							Nombre = reader.GetString("Nombre"),
 							Apellido = reader.GetString("Apellido"),
 							Dni = reader.GetString("Dni"),

@@ -4,66 +4,47 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1 class="mb-4">Listado de Contratos</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>
-              Monto
-            </th>
-            <th>
-               Fecha Inicio
-            </th>
-            <th>
-               Fecha Finalización
-            </th>
-            <th>
-               Inquilino
-            </th>
-              <th>
-               Inmueble
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-	<tbody>
-		@foreach (var item in Model)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Id)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Monto)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.FechaInicio)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.FechaFin)
-				</td>
-				<td>
-					<!-- @(item.Inqui.Nombre + " " + item.Inqui.Apellido) -->
-					@item.Inqui.ToString()
-				</td>
-                <td>
-					<!-- @(item.Inmue.Direccion) -->
-					@item.Inmue.ToString()
-				</td>
-				<td>
-					  <a asp-action="Edit" asp-route-id="@item.Id" title="Editar"><span
-                            class="btn btn-primary">Editar</span></a>&nbsp;
-                    <a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span
-                          class="btn btn-danger" >Finalizar Contrato</span></a>
-				</td>
-			</tr>
-			}
-		</tbody>
-</table>
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <a class="btn btn-success" asp-action="Create">Crear Nuevo Contrato</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover table-striped align-middle">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>@Html.DisplayNameFor(model => model.Monto)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaInicio)</th>
+                <th>@Html.DisplayNameFor(model => model.FechaFin)</th>
+                <th>Inquilino</th>
+                <th>Inmueble</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Monto)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
+                    <td>@item.Inqui.ToString()</td>
+                    <td>@item.Inmue.ToString()</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary" title="Editar">
+                                Editar
+                            </a>
+                            <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn btn-danger" title="Finalizar Contrato">
+                                Finalizar Contrato
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

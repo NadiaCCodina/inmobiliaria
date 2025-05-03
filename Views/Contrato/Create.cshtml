@@ -7,11 +7,19 @@
 	var ltaInquilinos = ViewBag.Inquilino;
 	var ltaInmuebles = ViewBag.Inmuebles;
 	var inmuebleId = ViewBag.Inmueble;
-	//var Id = Model?.Id ?? 0;
+	  var msj = TempData["Mensaje"] as string;
+		
+		
 }
 
 
+
+
 <h1>Create</h1>
+@if (!string.IsNullOrEmpty(msj))
+{
+    <p class="alert alert-info">@msj</p>
+}
 
 <h4>Contrato</h4>
 <hr />
@@ -21,7 +29,7 @@
 
 
 			<div>
-				<select class="Inquilino" id="Inquilino" name="InquilinoId">
+				<select class="Inquilino" id="Inquilino" name="InquilinoId" required>
 
 				</select>
 			</div>
@@ -36,7 +44,7 @@
 					<select class="form-control" name="InmuebleId">
 						@foreach (var item in ltaInmuebles)
 						{
-							<option value="@item.Id">@(item.ToString())</option>
+							<option  required value="@item.Id">@(item.ToString()) </option>
 
 						}
 					</select>
@@ -55,13 +63,13 @@
 
 			<div class="form-group">
 				<label asp-for="FechaInicio" class="control-label"></label>
-				<input asp-for="FechaInicio" type="date" class="form-control" />
+				<input asp-for="FechaInicio" type="date" class="form-control"required  />
 				<span asp-validation-for="FechaInicio" class="text-danger"></span>
 			</div>
 
 			<div class="form-group">
 				<label asp-for="FechaFin" class="control-label"></label>
-				<input asp-for="FechaFin" type="date" class="form-control" />
+				<input asp-for="FechaFin" type="date" class="form-control" required/>
 				<span asp-validation-for="FechaFin" class="text-danger"></span>
 			</div>
 

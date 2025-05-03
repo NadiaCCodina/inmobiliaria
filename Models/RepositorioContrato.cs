@@ -211,6 +211,29 @@ return entidad;
 			return res;
 		}
 
+        	public int Finalizar(Contrato entidad)
+		{
+			int res = -1;
+			MySqlConnection conn = ObtenerConexion();
+			{
+				string sql = "UPDATE contrato SET fechaFin= @fechaFin "+
+                "WHERE id = @id";
+				using (var command = new MySqlCommand(sql, conn))
+				{
+					
+                   
+                    command.Parameters.AddWithValue("@fechaFin", DateTime.Now);
+                    command.Parameters.AddWithValue("@id", entidad.Id);
+                    command.CommandType = CommandType.Text;
+                    
+
+					res = command.ExecuteNonQuery();
+
+				}
+			}
+			return res;
+		}
+
     }
 
 

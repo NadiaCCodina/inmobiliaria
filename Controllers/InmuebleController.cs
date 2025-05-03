@@ -57,6 +57,34 @@ namespace inmobiliaria.Controllers
 			return View("Index", listaTodos);
 			}
 		}
+		
+		public ActionResult buscarPor(int? cantidad, string tipo, int? propietarioId)
+		{
+			
+			cantidad = cantidad > 0 ? cantidad : null;
+			if (tipo == "") {
+				tipo = null;
+			}
+			if (propietarioId < 1) {
+				propietarioId=null;
+			}
+			var lista = repositorio.BuscarPor(tipo, cantidad, propietarioId );
+			// if (TempData.ContainsKey("Id"))
+			// 	ViewBag.Id = TempData["Id"];
+			// if (TempData.ContainsKey("Mensaje"))
+			// 	ViewBag.Mensaje = TempData["Mensaje"];
+			// ViewBag.Id = id;
+			//ViewBag.Propietario = repoPropietario.
+			if(lista != null && lista.Count > 0){
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
+			return View("Index", lista);}
+			 else{
+			 	ViewBag.Propietario = repoPropietario.ObtenerLista();
+			 	var listaTodos = repositorio.ObtenerTodos();
+		 	TempData["Mensaje"] = "No se encontraron inmuebles.";
+			return View("Index", listaTodos);
+			 }
+		}
 
 			public ActionResult porTipo(String tipo)
 		{
@@ -78,8 +106,8 @@ namespace inmobiliaria.Controllers
 				TempData["Mensaje"] = "No se encontraron inmuebles.";
 			return View("Index", listaTodos);
 			}
+		
 		}
-
 
 		public ActionResult PorPropietario(int id)
 		{
@@ -102,14 +130,25 @@ namespace inmobiliaria.Controllers
 			//DateTime fechaInicio= new DateTime(2025-04-15);
 			//DateTime fechaFin = new DateTime(2025-05-31);
 			var lista = repositorio.controlFechas(fechaInicio, fechaFin);
+
 			// if (TempData.ContainsKey("Id"))
 			// 	ViewBag.Id = TempData["Id"];
 			// if (TempData.ContainsKey("Mensaje"))
 			// 	ViewBag.Mensaje = TempData["Mensaje"];
 			// ViewBag.Id = id;
 			//ViewBag.Propietario = repoPropietario.
+			if(lista != null && lista.Count > 0){
 			ViewBag.Propietario = repoPropietario.ObtenerLista();
-			return View("Index", lista);
+			ViewBag.FechaIni = fechaInicio;
+			ViewBag.FechaF = fechaFin;
+			return View("Index", lista);}else{
+
+				ViewBag.Propietario = repoPropietario.ObtenerLista();
+				var listaTodos = repositorio.ObtenerTodos();
+				TempData["Mensaje"] = "No se encontraron inmuebles.";
+			return View("Index", listaTodos);
+			}
+
 		}
 
 		public ActionResult Create()

@@ -215,13 +215,13 @@ namespace inmobiliaria.Models
 					{
 						Contrato contrato = null;
 
-							if (!reader.IsDBNull(9) && !reader.IsDBNull(10) && !reader.IsDBNull(11))
+							if (!reader.IsDBNull(10) && !reader.IsDBNull(11) && !reader.IsDBNull(12))
 				{
 					contrato = new Contrato
 					{
-						Id = reader.GetInt32(11),
-						FechaInicio = reader.GetDateTime(9),
-						FechaFin = reader.GetDateTime(10),
+						Id = reader.GetInt32(12),
+						FechaInicio = reader.GetDateTime(10),
+						FechaFin = reader.GetDateTime(11),
 					};
 				}
 						entidad = new Inmueble
@@ -250,6 +250,60 @@ namespace inmobiliaria.Models
 			return res;
 		}
 	
+		public Inmueble controlFechaId(int id, DateTime fechaI, DateTime fechaF)
+		{
+			Inmueble entidad = null;
+			MySqlConnection conn = ObtenerConexion();
+			{
+				string sql = @$" SELECT i.id, i.direccion, `ambientes`, `superficie`, `latitud`, `longitud`, `idPropietario`, `uso`, `tipo`, `precio`, p.nombre, p.apellido
+            FROM inmueble i
+			join propietario p on i.idPropietario = p.id
+            WHERE i.id = @id
+            and NOT EXISTS (
+                SELECT 1
+                FROM contrato c
+                WHERE c.IdInmueble = i.Id
+                  AND ( (@fechaI BETWEEN c.FechaInicio AND c.FechaFin)
+                     OR (@fechaF BETWEEN c.FechaInicio AND c.FechaFin)
+                     OR (c.FechaInicio BETWEEN @fechaI AND @fechaF)
+                     OR (c.FechaFin BETWEEN @fechaI AND @fechaF)
+                  )
+            );";
+				using (var command = new MySqlCommand(sql, conn))
+				{
+					command.Parameters.AddWithValue("@id", id);
+					 command.Parameters.AddWithValue("@fechaI", fechaI);
+            command.Parameters.AddWithValue("@fechaF", fechaF);
+					command.CommandType = CommandType.Text;
+
+					var reader = command.ExecuteReader();
+					if (reader.Read())
+					{
+						entidad = new Inmueble
+						{
+							Id = reader.GetInt32(nameof(Inmueble.Id)),
+							Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString("Direccion"),
+							Ambientes = reader.GetInt32("Ambientes"),
+							Superficie = reader.GetInt32("Superficie"),
+							Latitud = reader.GetDecimal("Latitud"),
+							Longitud = reader.GetDecimal("Longitud"),
+							Uso = reader.GetString("Uso"),
+							Tipo = reader.GetString("Tipo"),
+							Precio = reader.GetInt32("Precio"),
+							PropietarioId = reader.GetInt32("idPropietario"),
+							Duenio = new Propietario
+							{
+								Id = reader.GetInt32("idPropietario"),
+								Nombre = reader.GetString("Nombre"),
+								Apellido = reader.GetString("Apellido"),
+							}
+						};
+					}
+
+				}
+			}
+			return entidad;
+		}
 
  public IList<Inmueble> controlFechas(DateTime fechaI, DateTime fechaF)
 {
@@ -346,7 +400,7 @@ public IList<Inmueble> BuscarPorAmbientes(int ambientes)
 					{
 						Contrato contrato = null;
 
-							if (!reader.IsDBNull(9) && !reader.IsDBNull(10) && !reader.IsDBNull(11))
+							if (!reader.IsDBNull(10) && !reader.IsDBNull(11) && !reader.IsDBNull(12))
 				{
 					contrato = new Contrato
 					{
@@ -409,7 +463,7 @@ public IList<Inmueble> BuscarPorTipo(String tipo)
 					{
 						Contrato contrato = null;
 
-							if (!reader.IsDBNull(9) && !reader.IsDBNull(10) && !reader.IsDBNull(11))
+							if (!reader.IsDBNull(10) && !reader.IsDBNull(11) && !reader.IsDBNull(12))
 				{
 					contrato = new Contrato
 					{
@@ -443,5 +497,92 @@ public IList<Inmueble> BuscarPorTipo(String tipo)
 			}
 			return res;
 		}
+
+				
+public IList<Inmueble> BuscarPor(String tipo, int? ambientes, int? idPropietario)
+		{
+			List<Inmueble> res = new List<Inmueble>();
+			Inmueble entidad = null;
+			MySqlConnection conn = ObtenerConexion();
+			{
+				string sql = @"SELECT 
+    i.Id AS InmuebleId, 
+    i.Direccion, 
+    i.Ambientes, 
+    i.Superficie, 
+    i.Latitud, 
+    i.Longitud, 
+    i.Tipo,
+    i.idPropietario AS PropietarioId, 
+    p.Nombre, 
+    p.Apellido, 
+    MAX(c.fechaInicio) AS fechaInicio, 
+    MAX(c.fechaFin) AS fechaFin, 
+    c.id AS ContratoId
+FROM 
+    Inmueble i
+LEFT JOIN 
+    Contrato c ON i.id = c.idInmueble
+JOIN 
+    Propietario p ON i.idPropietario = p.Id
+WHERE 
+    (@tipo IS NULL OR i.Tipo = @tipo) AND
+    (@ambientes IS NULL OR i.Ambientes = @ambientes) AND
+    (@idPropietario IS NULL OR i.idPropietario = @idPropietario)
+GROUP BY 
+    i.Id, i.Direccion, i.Ambientes, i.Superficie, i.Latitud, i.Longitud, i.Tipo, 
+    i.idPropietario, p.Nombre, p.Apellido, c.id
+ORDER BY 
+    MAX(c.fechaInicio);
+";
+				using (var command = new MySqlCommand(sql, conn))
+				{
+					command.Parameters.AddWithValue("@ambientes", ambientes);
+					command.Parameters.AddWithValue("@tipo", tipo);
+				   command.Parameters.AddWithValue("@idPropietario", idPropietario);
+				   
+					command.CommandType = CommandType.Text;
+				
+					var reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						Contrato contrato = null;
+
+							if (!reader.IsDBNull(10) && !reader.IsDBNull(11) && !reader.IsDBNull(12))
+				{
+					contrato = new Contrato
+					{
+					Id = reader.GetInt32(12),
+						FechaInicio = reader.GetDateTime(10),
+						FechaFin = reader.GetDateTime(11),
+					};
+				}
+						entidad = new Inmueble
+						{
+							Id = reader.GetInt32("InmuebleId"),
+							Direccion = reader["Direccion"] == DBNull.Value? "" : reader.GetString("Direccion"),
+							Ambientes = reader.GetInt32("Ambientes"),
+							Superficie = reader.GetInt32("Superficie"),
+							Latitud = reader.GetDecimal("Latitud"),
+							Longitud = reader.GetDecimal("Longitud"),
+							Tipo = reader.GetString("Tipo"),
+							PropietarioId = reader.GetInt32("PropietarioId"),
+							Duenio = new Propietario
+							{
+								Id = reader.GetInt32("PropietarioId"),
+								Nombre = reader.GetString("Nombre"),
+								Apellido = reader.GetString("Apellido"),
+							},
+								ContratoInmueble = contrato
+						};
+						res.Add(entidad);
+					}
+				
+				}
+			}
+			return res;
+		}
+
+
 }
 }

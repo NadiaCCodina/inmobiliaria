@@ -35,16 +35,25 @@ namespace inmobiliaria.Controllers
 			return View(lista);
 		}
 
-			public ActionResult Create(int id)
+			public ActionResult Create(int id, DateTime fechaInicio, DateTime fechaFin)
 		{
 			try
 			{
-				if(id>0){
-					
+				if(id>0 && fechaInicio!=null &&fechaInicio!=null ){
+					var controlFecha = repoInmueble.controlFechaId(id,fechaInicio,fechaFin);
+					if (controlFecha != null){
+{
 					ViewBag.Inmueble = repoInmueble.ObtenerPorId(id);
 					ViewBag.Inquilino = repoInquilino.ObtenerLista();
 					
-					return View();
+					return View();}
+					}else{
+						TempData["Mensaje"] = "Esa fecha no esta disponible";
+						ViewBag.Inquilino = repoInquilino.ObtenerLista();
+				        ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+						return View();
+					}
+
 				}else{
 				ViewBag.Inquilino = repoInquilino.ObtenerLista();
 				ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
@@ -67,17 +76,23 @@ namespace inmobiliaria.Controllers
 			{
 				if (ModelState.IsValid)
 				{
+					var controlF =repoInmueble.controlFechaId(entidad.InmuebleId, entidad.FechaInicio, entidad.FechaFin);
 					var precio= repoInmueble.ObtenerPorId(entidad.InmuebleId);
-
+                    if(controlF!=null){
 					repositorio.Alta(entidad, precio.Precio);
 					//TempData["Id"] = entidad.Id;
-					return RedirectToAction(nameof(Index));
+					return RedirectToAction(nameof(Index));}else{
+						ViewBag.Inquilino = repoInquilino.ObtenerLista();
+				        ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+                    TempData["Mensaje"] = "Fecha no disponible";
+						return View(entidad);
+					}
 				}
 				else
 				{
-					return RedirectToAction(nameof(Index));
+					//return RedirectToAction(nameof(Index));
 					// ViewBag.Propietario = repoPropietario.ObtenerLista();
-					//return View(entidad);
+					return View(entidad);
 				}
 			}
 			catch (Exception ex)
@@ -129,7 +144,7 @@ namespace inmobiliaria.Controllers
 			 }
 		}
 
-		public ActionResult Eliminar(int id)
+		public ActionResult Finalizar(int id)
 		{
 			var entidad = repositorio.ObtenerPorId(id);
 			if (TempData.ContainsKey("Mensaje"))
@@ -137,6 +152,24 @@ namespace inmobiliaria.Controllers
 			if (TempData.ContainsKey("Error"))
 				ViewBag.Error = TempData["Error"];
 			return View(entidad);
+		}
+
+			[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Finalizar(int id, Contrato entidad)
+		{
+			try
+			{
+				repositorio.Finalizar(entidad);
+				TempData["Mensaje"] = "Eliminación realizada correctamente";
+				return RedirectToAction(nameof(Index));
+			}
+			catch (Exception ex)
+			{
+				ViewBag.Error = ex.Message;
+				ViewBag.StackTrate = ex.StackTrace;
+				return View(entidad);
+			}
 		}
     }
 }
