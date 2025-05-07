@@ -19,7 +19,8 @@
                 <th>@Html.DisplayNameFor(model => model.FechaInicio)</th>
                 <th>@Html.DisplayNameFor(model => model.FechaFin)</th>
                 <th>Inquilino</th>
-                <th>Inmueble</th>
+                <th>Direccion</th>
+                <th>Importe</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -29,10 +30,11 @@
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.Id)</td>
                     <td>@Html.DisplayFor(modelItem => item.Monto)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FechaInicio)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FechaFin)</td>
+                    <td>@item.FechaInicio.ToString("yyyy-MM-dd")</td>
+                    <td>@item.FechaFin.ToString("yyyy-MM-dd")</td>
                     <td>@item.Inqui.ToString()</td>
-                    <td>@item.Inmue.ToString()</td>
+                    <td>@item.Inmue.Direccion</td>
+                     <td>@item.Inmue.Precio</td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary" title="Editar">
@@ -40,6 +42,14 @@
                             </a>
                             <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn btn-danger" title="Finalizar Contrato">
                                 Finalizar Contrato
+                            </a>
+                            @if (item.Pagos > 0)
+                            {
+                                <a asp-action="Create" asp-route-id="@item.Id" asp-controller="Pago" class="btn btn-danger" title="Create">
+                                    Pagar
+                            </a>}
+                              <a asp-action="Index" asp-route-id="@item.Id" asp-controller="Pago" class="btn btn-danger" title="Create">
+                                Pagos
                             </a>
                         </div>
                     </td>

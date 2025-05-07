@@ -17,17 +17,21 @@ namespace inmobiliaria.Controllers
 		private readonly RepositorioContrato repositorio;
 		private readonly RepositorioInquilino repoInquilino;
         private readonly RepositorioInmueble repoInmueble;
+		 private readonly RepositorioPago repoPago;
+		
 		
 		public ContratoController()
 		{
 			this.repositorio = new RepositorioContrato();
 			this.repoInmueble = new RepositorioInmueble();
             this.repoInquilino = new RepositorioInquilino();
+			this.repoPago = new RepositorioPago();
 		}
 
         public ActionResult Index(int pagina = 1 )
 		{
 			var lista = repositorio.ObtenerTodos();
+			
 			if (TempData.ContainsKey("Id"))
 				ViewBag.Id = TempData["Id"];
 			if (TempData.ContainsKey("Mensaje"))
@@ -72,16 +76,29 @@ namespace inmobiliaria.Controllers
 		public ActionResult Create(Contrato entidad)
 		{
 			
+      
+
+
 			try
 			{
 				if (ModelState.IsValid)
 				{
+	
+
+					
 					var controlF =repoInmueble.controlFechaId(entidad.InmuebleId, entidad.FechaInicio, entidad.FechaFin);
 					var precio= repoInmueble.ObtenerPorId(entidad.InmuebleId);
                     if(controlF!=null){
 					repositorio.Alta(entidad, precio.Precio);
 					//TempData["Id"] = entidad.Id;
-					return RedirectToAction(nameof(Index));}else{
+					var pendiente= "Pendiente";
+        var cantidadMeses = CalcularCantidadMeses( entidad.FechaInicio, entidad.FechaFin);
+       for (int i = 1; i < cantidadMeses+1 ; i++)
+		{
+			repoPago.AltaAutomatico(entidad.Id, i, precio.Precio, pendiente);
+		} 
+					return RedirectToAction(nameof(Index));}
+					else{
 						ViewBag.Inquilino = repoInquilino.ObtenerLista();
 				        ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
                     TempData["Mensaje"] = "Fecha no disponible";
@@ -171,6 +188,19 @@ namespace inmobiliaria.Controllers
 				return View(entidad);
 			}
 		}
+
+		private static double CalcularCantidadMeses(DateTime fechaInicio, DateTime fechaFin)
+{
+    var fechaInicioConvertida = fechaInicio.ToUniversalTime();
+    var fechaFinConvertida = fechaFin.ToUniversalTime();
+    if (fechaInicioConvertida > fechaFinConvertida)
+    {
+        throw new ArgumentOutOfRangeException(nameof(fechaInicio),
+            "Error en las fechas");
+    }
+    double diasTotales = (fechaFinConvertida - fechaInicioConvertida).TotalDays;
+    return diasTotales / (365.2425 / 12);
+}
     }
 }
 

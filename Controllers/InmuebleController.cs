@@ -37,9 +37,20 @@ namespace inmobiliaria.Controllers
 			return View(lista);
 		}
 
+
+	public ActionResult Inmueble(int pagina = 1)
+		{
+			var lista = repositorio.ObtenerTodos();
+			ViewBag.Propietario = repoPropietario.ObtenerLista();
+			if (TempData.ContainsKey("Id"))
+				ViewBag.Id = TempData["Id"];
+			if (TempData.ContainsKey("Mensaje"))
+				ViewBag.Mensaje = TempData["Mensaje"];
+			return View(lista);
+		}
 		public ActionResult PorAmbiente(int cantidad)
 		{
-			
+
 			var lista = repositorio.BuscarPorAmbientes(cantidad);
 			// if (TempData.ContainsKey("Id"))
 			// 	ViewBag.Id = TempData["Id"];
@@ -47,14 +58,17 @@ namespace inmobiliaria.Controllers
 			// 	ViewBag.Mensaje = TempData["Mensaje"];
 			// ViewBag.Id = id;
 			//ViewBag.Propietario = repoPropietario.
-			if(lista != null && lista.Count > 0){
-			ViewBag.Propietario = repoPropietario.ObtenerLista();
-			return View("Index", lista);}
-			else{
+			if (lista != null && lista.Count > 0)
+			{
+				ViewBag.Propietario = repoPropietario.ObtenerLista();
+				return View("Index", lista);
+			}
+			else
+			{
 				ViewBag.Propietario = repoPropietario.ObtenerLista();
 				var listaTodos = repositorio.ObtenerTodos();
 				TempData["Mensaje"] = "No se encontraron inmuebles.";
-			return View("Index", listaTodos);
+				return View("Index", listaTodos);
 			}
 		}
 		
@@ -126,9 +140,7 @@ namespace inmobiliaria.Controllers
 
 	public ActionResult PorFechaContrato(DateTime fechaInicio, DateTime fechaFin )
 		{
-			//var lista = repositorio.ObtenerTodos();
-			//DateTime fechaInicio= new DateTime(2025-04-15);
-			//DateTime fechaFin = new DateTime(2025-05-31);
+			
 			var lista = repositorio.controlFechas(fechaInicio, fechaFin);
 
 			// if (TempData.ContainsKey("Id"))

@@ -1,0 +1,63 @@
+@model inmobiliaria.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Detalle del Inmueble";
+}
+
+<h1 class="mt-4 mb-4">Detalle del Inmueble</h1>
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        Información del Inmueble
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Dirección</dt>
+            <dd class="col-sm-8">@Model.Direccion</dd>
+
+            <dt class="col-sm-4">Ambientes</dt>
+            <dd class="col-sm-8">@Model.Ambientes</dd>
+
+            <dt class="col-sm-4">Superficie</dt>
+            <dd class="col-sm-8">@Model.Superficie m²</dd>
+
+            <dt class="col-sm-4">Latitud</dt>
+            <dd class="col-sm-8">@Model.Latitud</dd>
+
+            <dt class="col-sm-4">Longitud</dt>
+            <dd class="col-sm-8">@Model.Longitud</dd>
+
+            <dt class="col-sm-4">Uso</dt>
+            <dd class="col-sm-8">@Model.Uso</dd>
+
+            <dt class="col-sm-4">Tipo</dt>
+            <dd class="col-sm-8">@Model.Tipo</dd>
+
+            <dt class="col-sm-4">Precio</dt>
+            <dd class="col-sm-8">$@Model.Precio</dd>
+
+            <dt class="col-sm-4">Propietario</dt>
+            <dd class="col-sm-8">@Model.Duenio?.ToString() ?? "Sin asignar"</dd>
+
+            @if (Model.ContratoInmueble != null)
+            {
+                <dt class="col-sm-4">Contrato Vigente</dt>
+                <dd class="col-sm-8">
+                    @Model.ContratoInmueble.FechaInicio.ToString("yyyy-MM-dd")
+                    al
+                    @Model.ContratoInmueble.FechaFin.ToString("yyyy-MM-dd")
+                </dd>
+            }
+            else
+            {
+                <dt class="col-sm-4">Contrato Vigente</dt>
+                <dd class="col-sm-8 text-muted">Sin contrato asignado</dd>
+            }
+        </dl>
+
+        <div class="mt-4">
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        </div>
+    </div>
+</div>

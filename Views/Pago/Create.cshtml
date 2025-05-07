@@ -1,0 +1,84 @@
+@using inmobiliaria.Models
+@model inmobiliaria.Models.Pago
+@{
+    ViewData["Title"] = "Create";
+    ViewBag.Title = "Create";
+
+    var pago = ViewBag.Pago;
+    var contra = ViewBag.Contrato;
+}
+
+<h4 class="mb-4">Registro de Pago</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+        
+            <div class="form-group">
+                <label for="ContratoInquilino" class="control-label">Inquilino</label>
+                <input id="ContratoInquilino" type="text" class="form-control" value="@contra.Inqui.ToString()"
+                    readonly />
+             
+            </div>
+
+            <div class="form-group">
+                <label for="ContratoInmueble" class="control-label">Contrato</label>
+                <input id="ContratoInmueble" type="text" class="form-control" value="@contra.Inmue.ToString()"
+                    readonly />
+                <input type="hidden" name="ContratoId" value="@contra.Id" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Número de Cuota</label>
+                <p class="form-control">@pago?.NroCuota</p>
+                <input type="hidden" name="NroCuota" value="@pago?.NroCuota" />
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="Mes" class="control-label">Cuota correspondiente al Mes</label>
+                <select id="tipoSelect" class="form-select" name="Mes" required>
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+                <span asp-validation-for="Mes" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label class="control-label">Importe</label>
+                <input type="number" step="0.01" class="form-control" name="Monto" value="@pago?.Monto" required />
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="FechaPago" class="control-label">Fecha de Pago</label>
+                <input asp-for="FechaPago" type="date" class="form-control" required />
+                <span asp-validation-for="FechaPago" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+
+                <input asp-for="Id" class="form-control" value="@pago?.Id" required />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group d-flex justify-content-between mt-3">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <a class="btn btn-secondary" asp-action="Index">Volver al listado</a>
+            </div>
+        </form>
+    </div>
+</div>

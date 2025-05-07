@@ -1,0 +1,57 @@
+
+@using inmobiliaria.Models
+
+@model IEnumerable<Pago>
+@{
+    ViewData["Title"] = "Pagos del Contrato";
+    var contratoId = ViewBag.Contrato;
+    var msj = TempData["Mensaje"] as string;
+}
+
+<h1 class="mb-4">Pagos del Contrato </h1>
+<h1> Inquilino: @contratoId.Inqui.Nombre @contratoId.Inqui.Apellido</h1>
+<h1> Inmueble: @contratoId.Inmue.Direccion</h1>
+
+@if (!string.IsNullOrEmpty(msj))
+{
+    <div class="alert alert-info">@msj</div>
+}
+
+<p>
+    <a asp-action="Create" asp-route-idContrato="@contratoId" class="btn btn-primary mb-3">Registrar nuevo pago</a>
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.First().Id)</th>
+                <th>@Html.DisplayNameFor(model => model.First().ContratoId)</th>
+                <th>@Html.DisplayNameFor(model => model.First().NroCuota)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Monto)</th>
+                <th>@Html.DisplayNameFor(model => model.First().FechaPago)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Mes)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Estado)</th>
+                @* <th>Acciones</th> *@
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var pago in Model)
+        {
+            <tr>
+                <td>@pago.Id</td>
+                <td>@pago.ContratoId</td>
+                <td>@pago.NroCuota</td>
+                <td>@pago.Monto.ToString("C")</td>
+                <td>@pago.FechaPago.ToString("yyyy-MM-dd")</td>
+                <td>@pago.Mes</td>
+                <td>@pago.Estado</td>
+                @* <td>
+                    <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-primary mb-1">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@pago.Id" class="btn btn-sm btn-danger mb-1">Eliminar</a>
+                </td> *@
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
