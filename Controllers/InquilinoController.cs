@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace inmobiliaria.Controllers
 {
-
+[Authorize]
 	public class InquilinoController : Controller
 	{
 
@@ -137,20 +138,12 @@ namespace inmobiliaria.Controllers
 		//public ActionResult Edit(int id, IFormCollection collection)
 		public ActionResult Edit(int id, Inquilino entidad)
 		{
-			// Si en lugar de IFormCollection ponemos Inquilino, el enlace de datos lo hace el sistema
+		
 			Inquilino i = null;
 			try
 			{
 				i = repositorio.ObtenerPorId(id);
-				// En caso de ser necesario usar: 
-				//
-				//Convert.ToInt32(collection["CAMPO"]);
-				//Convert.ToDecimal(collection["CAMPO"]);
-				//Convert.ToDateTime(collection["CAMPO"]);
-				//int.Parse(collection["CAMPO"]);
-				//decimal.Parse(collection["CAMPO"]);
-				//DateTime.Parse(collection["CAMPO"]);
-				////////////////////////////////////////
+			
 				i.Nombre = entidad.Nombre;
 				i.Apellido = entidad.Apellido;
 				i.Dni = entidad.Dni;
@@ -172,7 +165,7 @@ namespace inmobiliaria.Controllers
 				return View();
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}
@@ -183,7 +176,25 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				var res = repositorio.BuscarPorNombre(q);
-				return Json(new { Datos = res });
+
+				return View("Index", res);
+			
+			}
+			catch (Exception ex)
+			{
+				return Json(new { Error = ex.Message });
+			}
+		}
+
+       [Route("[controller]/Buscarjson/{q}", Name = "BuscarInquilinoJson")]
+		public ActionResult Buscarjson(string q)
+		{
+			try
+			{
+				var res = repositorio.BuscarPorNombre(q);
+
+				
+				 return Json(new { Datos = res });
 			}
 			catch (Exception ex)
 			{
@@ -196,10 +207,10 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				var entidad = repositorio.ObtenerPorId(id);
-				return View(entidad);//¿qué falta?
+				return View(entidad);
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}

@@ -23,10 +23,18 @@ namespace inmobiliaria.Models
 		public DateTime FechaInicio { get; set; }
 		//[Required]
 		public DateTime FechaFin { get; set; }
+
+		public DateTime? FechaFinEfectiva { get; set; }
 		public Inquilino? Inqui { get; set; }
 		public Inmueble? Inmue { get; set; }
 
 		public int Pagos { get; set; }
+		public int? UsuarioAltaId { get; set; }
+		public DateTime? FechaAltaUsuario { get; set; }
+		public int? UsuarioBajaId { get; set; }
+		public DateTime? FechaFinUsuario { get; set; }
+		public Usuario? UsuAlta { get; set; }
+		public Usuario? UsuBaja { get; set; }
 		
 		
       

@@ -1,8 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<string>
+@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
 }
+<h3>@ViewBag.Titulo</h3>
+<p>Estos son nuestros Inmuebles Disponibles:</p>
+<ul>
+	@foreach (string s in Model)
+	{
+		<li>@s</li>
+	}
+</ul>
+@if (!User.Identity.IsAuthenticated)
+{
+	await Html.RenderPartialAsync("_Login", new LoginView());
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+}

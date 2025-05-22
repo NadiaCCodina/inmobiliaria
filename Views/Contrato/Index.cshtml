@@ -2,24 +2,80 @@
 
 @{
     ViewData["Title"] = "Index";
+    var msj = TempData["Mensaje"] as string;
+    var ltaInmuebles = ViewBag.Inmuebles;
 }
 
-<h1 class="mb-4">Listado de Contratos</h1>
+<h1 class="mb-4">Contratos</h1>
 
-<div class="mb-3 d-flex justify-content-between align-items-center">
-    <a class="btn btn-success" asp-action="Create">Crear Nuevo Contrato</a>
+@if (!string.IsNullOrEmpty(msj))
+{
+    <div class="alert alert-info">@msj</div>
+}
+
+    <a class="btn btn-success" asp-action="Create">Crear Nuevo</a>
+
+<div class="d-flex flex-wrap gap-3 mb-4">
+
+  
+    @if (ltaInmuebles != null)
+    {
+        <div class="card flex-fill" style="min-width: 60%;">
+            <div class="card-header bg-dark text-white">
+                <strong>Filtro por Inmueble</strong>
+            </div>
+            <div class="card-body bg-dark text-white">
+                <form class="form-row justify-content-start">
+                    <div class="form-group col-md-8">
+                        <label for="InmuebleId">Inmueble</label>
+                        <select id="InmuebleId" class="form-control" name="InmuebleId">
+                            @foreach (var item in ltaInmuebles)
+                            {
+                                <option value="@item.Id">@item.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-light w-100" onclick="buscarPorInmueble()">
+                            Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+
+    <div class="card" style="min-width: 35%;">
+        <div class="card-header bg-dark text-white">
+            <strong>Filtro por Fecha de Contrato</strong>
+        </div>
+        <div class="card-body bg-dark text-white">
+            <form>
+                <div class="form-group">
+                    <label for="fechaInicioSelect">Fecha Inicio</label>
+                    <input id="fechaInicioSelect" type="date" class="form-control" />
+                </div>
+                <div class="form-group mt-3">
+                    <label for="fechaFinSelect">Fecha Fin</label>
+                    <input id="fechaFinSelect" type="date" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-outline-light w-100 mt-3" onclick="buscarPorFecha()">Buscar por Fechas</button>
+            </form>
+        </div>
+    </div>
+
 </div>
 
+
+
 <div class="table-responsive">
-    <table class="table table-bordered table-hover table-striped align-middle">
+    <table class="table table-dark table-bordered table-hover table-striped align-middle">
         <thead class="thead-dark">
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Id)</th>
-                <th>@Html.DisplayNameFor(model => model.Monto)</th>
                 <th>@Html.DisplayNameFor(model => model.FechaInicio)</th>
                 <th>@Html.DisplayNameFor(model => model.FechaFin)</th>
                 <th>Inquilino</th>
-                <th>Direccion</th>
+                <th>Dirección</th>
                 <th>Importe</th>
                 <th>Acciones</th>
             </tr>
@@ -28,33 +84,65 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Monto)</td>
                     <td>@item.FechaInicio.ToString("yyyy-MM-dd")</td>
                     <td>@item.FechaFin.ToString("yyyy-MM-dd")</td>
                     <td>@item.Inqui.ToString()</td>
                     <td>@item.Inmue.Direccion</td>
-                     <td>@item.Inmue.Precio</td>
+                    <td>@item.Inmue.Precio</td>
                     <td>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary" title="Editar">
-                                Editar
-                            </a>
-                            <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn btn-danger" title="Finalizar Contrato">
-                                Finalizar Contrato
-                            </a>
-                            @if (item.Pagos > 0)
-                            {
-                                <a asp-action="Create" asp-route-id="@item.Id" asp-controller="Pago" class="btn btn-danger" title="Create">
-                                    Pagar
-                            </a>}
-                              <a asp-action="Index" asp-route-id="@item.Id" asp-controller="Pago" class="btn btn-danger" title="Create">
-                                Pagos
-                            </a>
-                        </div>
+                        @if (item.FechaFinEfectiva != null)
+                        {
+                            <span class="badge badge-danger">Contrato Finalizado</span>
+                        }
+                        else
+                        {
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" title="Editar" class="btn btn-outline-light">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <a asp-action="Detalle" asp-route-id="@item.Id" title="Detalle" class="btn btn-outline-info">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </a>
+                                <a asp-action="Create" asp-controller="Contrato" asp-route-id="@item.Id" class="btn btn-success" title="Renovar">
+                                    Renovar
+                                </a>
+                                <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn btn-danger" title="Finalizar">
+                                    Finalizar
+                                </a>
+                                <a asp-action="Index" asp-controller="Pago" asp-route-id="@item.Id" class="btn btn-info">
+                                    Pagos
+                                </a>
+                                @if (item.Pagos > 0)
+                                {
+                                    <a asp-action="Create" asp-controller="Pago" asp-route-id="@item.Id" class="btn btn-secondary">
+                                        Pagar
+                                    </a>
+                                }
+                            </div>
+                        }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        function buscarPorFecha() {
+            var fechaI = document.getElementById('fechaInicioSelect').value;
+            var fechaF = document.getElementById('fechaFinSelect').value;
+
+            if (fechaI && fechaF) {
+                window.location.href = '/Contrato/porFecha?fechaInicio=' + encodeURIComponent(fechaI) + '&fechaFin=' + encodeURIComponent(fechaF);
+            }
+        }
+
+        function buscarPorInmueble() {
+            var idInmueble = document.getElementById('InmuebleId').value;
+            if (idInmueble) {
+                window.location.href = '/Contrato/porInmueble?id=' + encodeURIComponent(idInmueble);
+            }
+        }
+    </script>
+}

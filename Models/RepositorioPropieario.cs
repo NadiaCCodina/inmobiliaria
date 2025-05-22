@@ -44,7 +44,8 @@ namespace inmobiliaria.Models
 			int res = -1;
 			MySqlConnection conn = ObtenerConexion();
 			{
-				string sql = @$"DELETE FROM Propietario WHERE {nameof(Propietario.Id)} = @id";
+				string sql = @$"UPDATE Propietario
+					SET estado=0 WHERE {nameof(Propietario.Id)} = @id";
 				using (var command = new MySqlCommand(sql, conn))
 				{
 					command.CommandType = CommandType.Text;
@@ -64,6 +65,7 @@ namespace inmobiliaria.Models
 				string sql = @$"
 					SELECT Id, Direccion, Nombre, Apellido, Dni, Telefono, Email
 					FROM Propietario
+					WHERE estado = 1
 					LIMIT {tamPagina} OFFSET {(paginaNro - 1) * tamPagina}
 				";
 				using (var command = new MySqlCommand(sql, conn))

@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers
 {
-
+[Authorize]
 	public class InmuebleController : Controller
 	{
 		private readonly RepositorioInmueble repositorio;
@@ -83,12 +84,7 @@ namespace inmobiliaria.Controllers
 				propietarioId=null;
 			}
 			var lista = repositorio.BuscarPor(tipo, cantidad, propietarioId );
-			// if (TempData.ContainsKey("Id"))
-			// 	ViewBag.Id = TempData["Id"];
-			// if (TempData.ContainsKey("Mensaje"))
-			// 	ViewBag.Mensaje = TempData["Mensaje"];
-			// ViewBag.Id = id;
-			//ViewBag.Propietario = repoPropietario.
+			
 			if(lista != null && lista.Count > 0){
 			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			return View("Index", lista);}
@@ -104,12 +100,7 @@ namespace inmobiliaria.Controllers
 		{
 			
 			var lista = repositorio.BuscarPorTipo(tipo);
-			// if (TempData.ContainsKey("Id"))
-			// 	ViewBag.Id = TempData["Id"];
-			// if (TempData.ContainsKey("Mensaje"))
-			// 	ViewBag.Mensaje = TempData["Mensaje"];
-			// ViewBag.Id = id;
-			//ViewBag.Propietario = repoPropietario.
+		
 			if(lista != null && lista.Count > 0){
 			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			return View("Index", lista);}
@@ -126,12 +117,7 @@ namespace inmobiliaria.Controllers
 		public ActionResult PorPropietario(int id)
 		{
 			var lista = repositorio.BuscarPorPropietario(id);
-			// if (TempData.ContainsKey("Id"))
-			// 	ViewBag.Id = TempData["Id"];
-			// if (TempData.ContainsKey("Mensaje"))
-			// 	ViewBag.Mensaje = TempData["Mensaje"];
-			// ViewBag.Id = id;
-			//ViewBag.Propietario = repoPropietario.
+		
 			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			return View("Index", lista);
 		}
@@ -143,12 +129,6 @@ namespace inmobiliaria.Controllers
 			
 			var lista = repositorio.controlFechas(fechaInicio, fechaFin);
 
-			// if (TempData.ContainsKey("Id"))
-			// 	ViewBag.Id = TempData["Id"];
-			// if (TempData.ContainsKey("Mensaje"))
-			// 	ViewBag.Mensaje = TempData["Mensaje"];
-			// ViewBag.Id = id;
-			//ViewBag.Propietario = repoPropietario.
 			if(lista != null && lista.Count > 0){
 			ViewBag.Propietario = repoPropietario.ObtenerLista();
 			ViewBag.FechaIni = fechaInicio;
@@ -168,8 +148,7 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				ViewBag.Propietario = repoPropietario.ObtenerLista();
-				//ViewData["Propietarios"] = repoPropietario.ObtenerTodos();
-				//ViewData[nameof(Propietario)] = repoPropietario.ObtenerTodos();
+			
 				return View();
 			}
 			catch (Exception ex)
@@ -194,8 +173,7 @@ namespace inmobiliaria.Controllers
 				else
 				{
 					return RedirectToAction(nameof(Index));
-					// ViewBag.Propietario = repoPropietario.ObtenerLista();
-					// return View(entidad);
+				
 				}
 			}
 			catch (Exception ex)

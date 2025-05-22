@@ -7,15 +7,17 @@ namespace inmobiliaria.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
+       private readonly RepositorioInmueble repoInmueble;
     public HomeController(ILogger<HomeController> logger)
     {
+        this.repoInmueble = new RepositorioInmueble();
         _logger = logger;
     }
 
     public IActionResult Index()
-    {
-        return View();
+    {	ViewBag.Titulo = "Página de Inicio";
+			List<string> inmuebles = repoInmueble.controlFechas(DateTime.Today, DateTime.Today).Select(x => x.Direccion).ToList();
+			return View(inmuebles);
     }
 
     public IActionResult Privacy()

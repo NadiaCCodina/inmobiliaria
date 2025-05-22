@@ -1,23 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using inmobiliaria.Models;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 
+using inmobiliaria.Models;
+
 namespace inmobiliaria.Controllers
 {
 
+[Authorize]
 	public class ContratoController : Controller
 	{
 		private readonly RepositorioContrato repositorio;
 		private readonly RepositorioInquilino repoInquilino;
         private readonly RepositorioInmueble repoInmueble;
-		 private readonly RepositorioPago repoPago;
+		private readonly RepositorioPago repoPago;
 		
 		
 		public ContratoController()
@@ -31,38 +36,80 @@ namespace inmobiliaria.Controllers
         public ActionResult Index(int pagina = 1 )
 		{
 			var lista = repositorio.ObtenerTodos();
-			
+          
+		
 			if (TempData.ContainsKey("Id"))
 				ViewBag.Id = TempData["Id"];
 			if (TempData.ContainsKey("Mensaje"))
 				ViewBag.Mensaje = TempData["Mensaje"];
+				    ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
 			return View(lista);
 		}
 
-			public ActionResult Create(int id, DateTime fechaInicio, DateTime fechaFin)
+ 		public ActionResult Detalle(int id)
+		{
+			if (!User.IsInRole("Administrador"))//no soy admin
+			{
+				var contrato = repositorio.ObtenerPorId(id);
+				return View(contrato);
+			}
+			else
+			{
+
+				var contratoAuditoria = repositorio.ObtenerPorIdAuditoria(id);
+
+
+				if (TempData.ContainsKey("Id"))
+					ViewBag.Id = TempData["Id"];
+				if (TempData.ContainsKey("Mensaje"))
+					ViewBag.Mensaje = TempData["Mensaje"];
+				ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+				return View(contratoAuditoria);
+			}
+		}
+
+
+		public ActionResult Create(int id, int idInmueble, DateTime fechaInicio, DateTime fechaFin)
 		{
 			try
 			{
-				if(id>0 && fechaInicio!=null &&fechaInicio!=null ){
-					var controlFecha = repoInmueble.controlFechaId(id,fechaInicio,fechaFin);
-					if (controlFecha != null){
-{
-					ViewBag.Inmueble = repoInmueble.ObtenerPorId(id);
-					ViewBag.Inquilino = repoInquilino.ObtenerLista();
-					
-					return View();}
-					}else{
+				if (id > 0)
+				{
+					ViewBag.Contrato = repositorio.ObtenerPorId(id);
+					return View();
+				}
+				else if
+					 (idInmueble > 0 && fechaInicio != null && fechaInicio != null)
+				{
+					var controlFecha = repoInmueble.controlFechaId(idInmueble, fechaInicio, fechaFin);
+					if (controlFecha != null)
+					{
+						{
+							ViewBag.Inmueble = repoInmueble.ObtenerPorId(idInmueble);
+							ViewBag.Inquilino = repoInquilino.ObtenerLista();
+
+							return View();
+						}
+					}
+					else
+					{
 						TempData["Mensaje"] = "Esa fecha no esta disponible";
 						ViewBag.Inquilino = repoInquilino.ObtenerLista();
-				        ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+						ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
 						return View();
 					}
 
-				}else{
-				ViewBag.Inquilino = repoInquilino.ObtenerLista();
-				ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
-				
-				return View();}
+
+				}
+
+
+				else
+				{
+					ViewBag.Inquilino = repoInquilino.ObtenerLista();
+					ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+
+					return View();
+				}
 			}
 			catch (Exception ex)
 			{
@@ -75,30 +122,30 @@ namespace inmobiliaria.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(Contrato entidad)
 		{
-			
-      
-
 
 			try
 			{
 				if (ModelState.IsValid)
 				{
 	
-
-					
+					int usuarioActualId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+					 
 					var controlF =repoInmueble.controlFechaId(entidad.InmuebleId, entidad.FechaInicio, entidad.FechaFin);
 					var precio= repoInmueble.ObtenerPorId(entidad.InmuebleId);
                     if(controlF!=null){
+						 entidad.UsuarioAltaId = usuarioActualId;
+						 
 					repositorio.Alta(entidad, precio.Precio);
 					//TempData["Id"] = entidad.Id;
 					var pendiente= "Pendiente";
-        var cantidadMeses = CalcularCantidadMeses( entidad.FechaInicio, entidad.FechaFin);
-       for (int i = 1; i < cantidadMeses+1 ; i++)
+        			var cantidadMeses = CalcularCantidadMeses( entidad.FechaInicio, entidad.FechaFin);
+       			for (int i = 1; i < cantidadMeses+1 ; i++)
 		{
 			repoPago.AltaAutomatico(entidad.Id, i, precio.Precio, pendiente);
 		} 
 					return RedirectToAction(nameof(Index));}
 					else{
+
 						ViewBag.Inquilino = repoInquilino.ObtenerLista();
 				        ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
                     TempData["Mensaje"] = "Fecha no disponible";
@@ -177,6 +224,8 @@ namespace inmobiliaria.Controllers
 		{
 			try
 			{
+				int usuarioActualId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+				entidad.UsuarioBajaId = usuarioActualId;
 				repositorio.Finalizar(entidad);
 				TempData["Mensaje"] = "Eliminación realizada correctamente";
 				return RedirectToAction(nameof(Index));
@@ -188,19 +237,69 @@ namespace inmobiliaria.Controllers
 				return View(entidad);
 			}
 		}
+		
+		public ActionResult PorInmueble(int id)
+		{
+
+			var lista = repositorio.ObtenerTodosPorInmueble(id);
+
+			if (lista != null && lista.Count > 0)
+			{
+				if (TempData.ContainsKey("Id"))
+				ViewBag.Id = TempData["Id"];
+				if (TempData.ContainsKey("Mensaje"))
+				ViewBag.Mensaje = TempData["Mensaje"];
+				ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+				ViewBag.Inmueble = repoInmueble.ObtenerPorId(id);
+				return View("Index", lista);
+			}
+			else
+			{
+
+				var listaTodos = repositorio.ObtenerTodos();
+				ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+				TempData["Mensaje"] = "No se encontraron Contratos.";
+				return View("Index", listaTodos);
+			}
+
+		}
+
+public ActionResult PorFecha(DateTime fechaInicio, DateTime fechaFin)
+		{
+
+			var lista = repositorio.ObtenerPorFecha(fechaInicio, fechaFin);
+
+			if (lista != null && lista.Count > 0)
+			{
+
+				ViewBag.FechaIni = fechaInicio;
+				ViewBag.FechaF = fechaFin;
+				return View("Index", lista);
+			}
+			else
+			{
+
+				var listaTodos = repositorio.ObtenerTodos();
+
+				TempData["Mensaje"] = "No se encontraron Contratos.";
+				return View("Index", listaTodos);
+			}
+
+		}
+		
 
 		private static double CalcularCantidadMeses(DateTime fechaInicio, DateTime fechaFin)
-{
-    var fechaInicioConvertida = fechaInicio.ToUniversalTime();
-    var fechaFinConvertida = fechaFin.ToUniversalTime();
-    if (fechaInicioConvertida > fechaFinConvertida)
-    {
-        throw new ArgumentOutOfRangeException(nameof(fechaInicio),
-            "Error en las fechas");
-    }
-    double diasTotales = (fechaFinConvertida - fechaInicioConvertida).TotalDays;
-    return diasTotales / (365.2425 / 12);
-}
+		{
+			var fechaInicioConvertida = fechaInicio.ToUniversalTime();
+			var fechaFinConvertida = fechaFin.ToUniversalTime();
+			if (fechaInicioConvertida > fechaFinConvertida)
+			{
+				throw new ArgumentOutOfRangeException(nameof(fechaInicio),
+					"Error en las fechas");
+			}
+			double diasTotales = (fechaFinConvertida - fechaInicioConvertida).TotalDays;
+			return diasTotales / (365.2425 / 12);
+		}
     }
 }
 

@@ -7,9 +7,9 @@
 	var ltaInquilinos = ViewBag.Inquilino;
 	var ltaInmuebles = ViewBag.Inmuebles;
 	var inmuebleId = ViewBag.Inmueble;
-	  var msj = TempData["Mensaje"] as string;
-		
-		
+	var msj = TempData["Mensaje"] as string;
+	var contrato = ViewBag.Contrato;
+
 }
 
 
@@ -18,73 +18,85 @@
 <h1>Create</h1>
 @if (!string.IsNullOrEmpty(msj))
 {
-    <p class="alert alert-info">@msj</p>
+	<p class="alert alert-info">@msj</p>
 }
 
 <h4>Contrato</h4>
 <hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Create">
+<div class="row g-3">
+
+	<form asp-action="Create">
+		@if (contrato != null)
+		{
+			<label class="control-label">Inquilino</label>
+			<p class="form-control">@contrato.Inqui</p>
+			<input type="hidden" name="InquilinoId" value="@contrato.Inqui.Id" />
+			<label class="control-label">Inmueble</label>
+			<p class="form-control">@contrato.Inmue</p>
+			<input type="hidden" name="InmuebleId" value="@contrato.Inmue.Id" />
 
 
-			<div>
-				<select class="Inquilino" id="Inquilino" name="InquilinoId" required>
+		}else{
+		<label class="control-label">Inquilino</label>
+		<div class="custom-select">
 
+			<select class="custom-select" id="Inquilino" name="InquilinoId" required>
+				<option></option>
+			</select>
+		</div>
+
+
+
+
+
+		@if (ltaInmuebles != null)
+		{
+			<div class="form-group">
+				<label class="control-label">Inmueble</label>
+				<select class="form-control" name="InmuebleId">
+					@foreach (var item in ltaInmuebles)
+					{
+						<option required value="@item.Id">Direccion: @item.Direccion /Importe:  @item.Precio</option>
+
+					}
 				</select>
+				<span asp-validation-for="InmuebleId" class="text-danger"></span>
 			</div>
-
-
-
-
-			@if (ltaInmuebles != null)
-			{
-				<div class="form-group">
-					<label class="control-label">Inmueble</label>
-					<select class="form-control" name="InmuebleId">
-						@foreach (var item in ltaInmuebles)
-						{
-							<option  required value="@item.Id">@(item.ToString()) </option>
-
-						}
-					</select>
-					<span asp-validation-for="InmuebleId" class="text-danger"></span>
-				</div>
-			}
-			else if (inmuebleId != null)
-			{
-				var inmueble = (inmobiliaria.Models.Inmueble)inmuebleId;
-				<div class="form-group">
-					<label class="control-label">Inmueble Elegido</label>
-					<p class="form-control">@inmueble.Direccion</p>
-					@* <input type="hidden" name="InmuebleId" value="@inmueble.Id" /> *@
-				</div>
-				<div class="form-group">
-					<label class="control-label">Importe</label>
-					<p class="form-control">@inmueble.Precio</p>
-					@* <input type="hidden" name="InmuebleId" value="@inmueble.Id" /> *@
-				</div>
-			}
-
+		}
+		else if (inmuebleId != null)
+		{
+			var inmueble = (inmobiliaria.Models.Inmueble)inmuebleId;
 			<div class="form-group">
-				<label asp-for="FechaInicio" class="control-label"></label>
-				<input asp-for="FechaInicio" type="date" class="form-control"required  />
-				<span asp-validation-for="FechaInicio" class="text-danger"></span>
+				<label class="control-label">Inmueble Elegido</label>
+				<p class="form-control">@inmueble.Direccion</p>
+				@* <input type="hidden" name="InmuebleId" value="@inmueble.Id" /> *@
 			</div>
-
 			<div class="form-group">
-				<label asp-for="FechaFin" class="control-label"></label>
-				<input asp-for="FechaFin" type="date" class="form-control" required/>
-				<span asp-validation-for="FechaFin" class="text-danger"></span>
+				<label class="control-label">Importe</label>
+				<p class="form-control">@inmueble.Precio</p>
+				@* <input type="hidden" name="InmuebleId" value="@inmueble.Id" /> *@
 			</div>
+		}
+}
+		<div class="form-group">
+			<label asp-for="FechaInicio" class="control-label"></label>
+			<input asp-for="FechaInicio" type="date" class="form-control" required />
+			<span asp-validation-for="FechaInicio" class="text-danger"></span>
+		</div>
 
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-primary" />
-				<a class="btn btn-secondary" asp-action="Index">Back to List</a>
-			</div>
-		</form>
-	</div>
+		<div class="form-group">
+			<label asp-for="FechaFin" class="control-label"></label>
+			<input asp-for="FechaFin" type="date" class="form-control" required />
+			<span asp-validation-for="FechaFin" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<input type="submit" value="Create" class="btn btn-primary" />
+			<a class="btn btn-secondary" asp-action="Index">Back to List</a>
+		</div>
+	</form>
 </div>
+
 
 
 @section Scripts {
@@ -95,39 +107,41 @@
 			$('#Inquilino').select2({
 				language: "es",
 				theme: 'bootstrap4',  // Aplica el tema de Bootstrap
+									 @* width: '100%'  *@
 				placeholder: "Buscar Inquilino...",
+
 				minimumInputLength: 3,// Realiza la búsqueda después de 3 caracteres
 				maximumInputLength: 10,// Limita la entrada a 10 caracteres
 				ajax: {
-					delay: 250,
-					dataType: "json",
-					cache: true,// Habilita el cache para evitar peticiones repetidas
-					//url: '/Propietarios/Buscar',
-					url: function (params) {
-						let q = params.term ? encodeURIComponent(params.term) : "";
-						return `/Inquilino/Buscar/${q}`;
-					},/*
-										data: function (params) {
-											var query = {
-												q: params.term,
-											}
-											return query;
-										},*/
-					processResults: function (res) {
-						return {
-							results: res.datos.map(i => ({ id: i.id, text: `${i.nombre} ${i.apellido}` }))
-						};
-					}
+				delay: 250,
+				dataType: "json",
+				cache: true,// Habilita el cache para evitar peticiones repetidas
+				//url: '/Propietarios/Buscar',
+				url: function (params) {
+					let q = params.term ? encodeURIComponent(params.term) : "";
+					return `/Inquilino/Buscarjson/${q}`;
+				},/*
+															data: function (params) {
+																var query = {
+																	q: params.term,
+																}
+																return query;
+															},*/
+				processResults: function (res) {
+					return {
+						results: res.datos.map(i => ({ id: i.id, text: `${i.nombre} ${i.apellido}` }))
+					};
 				}
-			});
-			@* var idOriginal = +"@Model?.InquilinoId";
+			}
+								});
+		@* var idOriginal = +"@Model?.InquilinoId";
 
 			var textoOriginal = "@Model?.Inqui?.Nombre" + ' ' + "@Model?.Inqui?.Apellido";
 			if (idOriginal && textoOriginal) {
 				var option = new Option(textoOriginal, idOriginal, true, true);
 				$(".Inquilino").append(option).trigger('change');
 			} *@
-						});
+											});
 	</script>
 
 	<style>

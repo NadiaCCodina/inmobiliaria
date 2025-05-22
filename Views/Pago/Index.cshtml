@@ -6,6 +6,7 @@
     ViewData["Title"] = "Pagos del Contrato";
     var contratoId = ViewBag.Contrato;
     var msj = TempData["Mensaje"] as string;
+    var mostrarUsuAlta = Model.Any(p => p.UsuAlta != null);
 }
 
 <h1 class="mb-4">Pagos del Contrato </h1>
@@ -17,9 +18,9 @@
     <div class="alert alert-info">@msj</div>
 }
 
-<p>
+@* <p>
     <a asp-action="Create" asp-route-idContrato="@contratoId" class="btn btn-primary mb-3">Registrar nuevo pago</a>
-</p>
+</p> *@
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
@@ -32,6 +33,11 @@
                 <th>@Html.DisplayNameFor(model => model.First().FechaPago)</th>
                 <th>@Html.DisplayNameFor(model => model.First().Mes)</th>
                 <th>@Html.DisplayNameFor(model => model.First().Estado)</th>
+               @if (mostrarUsuAlta)
+                {
+                  <th>Usuario Alta</th>
+                
+                }
                 @* <th>Acciones</th> *@
             </tr>
         </thead>
@@ -43,13 +49,15 @@
                 <td>@pago.ContratoId</td>
                 <td>@pago.NroCuota</td>
                 <td>@pago.Monto.ToString("C")</td>
-                <td>@pago.FechaPago.ToString("yyyy-MM-dd")</td>
+                <td>@pago.FechaPago?.ToString("yyyy-MM-dd")</td>
                 <td>@pago.Mes</td>
                 <td>@pago.Estado</td>
-                @* <td>
-                    <a asp-action="Edit" asp-route-id="@pago.Id" class="btn btn-sm btn-primary mb-1">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@pago.Id" class="btn btn-sm btn-danger mb-1">Eliminar</a>
-                </td> *@
+                @if (mostrarUsuAlta)
+        {
+            <td>@(pago.UsuAlta?.Nombre  ) @(pago.UsuAlta?.Apellido  )</td>
+
+        }
+              
             </tr>
         }
         </tbody>

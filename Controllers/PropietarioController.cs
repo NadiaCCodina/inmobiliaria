@@ -2,16 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using inmobiliaria.Models;
+
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 
+using inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
+
 namespace inmobiliaria.Controllers
 {
-
+  [Authorize]
 	public class PropietarioController : Controller
 	{
 
@@ -112,7 +115,7 @@ namespace inmobiliaria.Controllers
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}
@@ -126,7 +129,7 @@ namespace inmobiliaria.Controllers
 				return View(entidad);//pasa el modelo a la vista
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}
@@ -134,23 +137,15 @@ namespace inmobiliaria.Controllers
 		// POST: Propietario/Edit/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		//public ActionResult Edit(int id, IFormCollection collection)
+		
 		public ActionResult Edit(int id, Propietario entidad)
 		{
-			// Si en lugar de IFormCollection ponemos Propietario, el enlace de datos lo hace el sistema
+			
 			Propietario p = null;
 			try
 			{
 				p = repositorio.ObtenerPorId(id);
-				// En caso de ser necesario usar: 
-				//
-				//Convert.ToInt32(collection["CAMPO"]);
-				//Convert.ToDecimal(collection["CAMPO"]);
-				//Convert.ToDateTime(collection["CAMPO"]);
-				//int.Parse(collection["CAMPO"]);
-				//decimal.Parse(collection["CAMPO"]);
-				//DateTime.Parse(collection["CAMPO"]);
-				////////////////////////////////////////
+		
 				p.Nombre = entidad.Nombre;
 				p.Apellido = entidad.Apellido;
 				p.Dni = entidad.Dni;
@@ -161,7 +156,7 @@ namespace inmobiliaria.Controllers
 				return RedirectToAction(nameof(Index));
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}
@@ -172,7 +167,7 @@ namespace inmobiliaria.Controllers
 				return View();
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}
@@ -196,10 +191,10 @@ namespace inmobiliaria.Controllers
 			try
 			{
 				var entidad = repositorio.ObtenerPorId(id);
-				return View();//¿qué falta?
+				return View();
 			}
 			catch (Exception ex)
-			{//poner breakpoints para detectar errores
+			{
 				throw;
 			}
 		}

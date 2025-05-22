@@ -10,7 +10,7 @@ namespace inmobiliaria.Models
 	[Table("Inmueble")]
 	public class Inmueble
 	{
-		[Display(Name = "Nº")]
+		
 		public int Id { get; set; }
 		//[Required]
 		[Display(Name = "Dirección")]

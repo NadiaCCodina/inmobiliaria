@@ -1,0 +1,48 @@
+@using inmobiliaria.Models
+@model inmobiliaria.Models.Contrato
+
+<h1 class="mb-4 text-center">Editar Contrato</h1>
+
+<div class="card shadow-sm w-75 mx-auto">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Detalles del Contrato</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4 font-weight-bold mb-3">Inquilino</dt>
+            <dd class="col-sm-8 mb-3">@Model.Inqui.Nombre @Model.Inqui.Apellido</dd>
+
+            <dt class="col-sm-4 font-weight-bold mb-3">Dirección</dt>
+            <dd class="col-sm-8 mb-3">@Model.Inmue.Direccion</dd>
+
+			<dt class="col-sm-4 font-weight-bold mb-3">Fecha Inicio</dt>
+            <dd class="col-sm-8 mb-3">@Model.FechaInicio.ToString("dd/MM/yyyy")</dd>
+
+			<dt class="col-sm-4 font-weight-bold mb-3">Fecha Fin</dt>
+            <dd class="col-sm-8 mb-3">@Model.FechaFin.ToString("dd/MM/yyyy")</dd>
+
+            <dt class="col-sm-4 font-weight-bold mb-3">Ambientes</dt>
+            <dd class="col-sm-8 mb-3">@Model.Inmue.Ambientes</dd>
+
+            <dt class="col-sm-4 font-weight-bold mb-3">Precio</dt>
+            <dd class="col-sm-8 mb-3">@Model.Monto</dd>
+
+            @if(@Model.UsuAlta !=null){
+            <dt class="col-sm-4 font-weight-bold mb-3">Usuario Alta</dt>
+            <dd class="col-sm-8 mb-3">@Model.UsuAlta.Nombre @Model.UsuAlta.Apellido</dd>
+
+            <dt class="col-sm-4 font-weight-bold mb-3">Fecha Alta</dt>
+            <dd class="col-sm-8 mb-3">@Model.FechaAltaUsuario?.ToString("dd/MM/yyyy")</dd>}
+             @if(@Model.UsuBaja !=null){
+            <dt class="col-sm-4 font-weight-bold mb-3">Usuario Baja</dt>
+            <dd class="col-sm-8 mb-3">
+                @(Model.UsuBaja != null ? $"{Model.UsuBaja.Nombre} {Model.UsuBaja.Apellido}" : "-")
+            </dd>
+
+            <dt class="col-sm-4 font-weight-bold mb-3">Fecha Finalización</dt>
+            <dd class="col-sm-8 mb-3">
+                @(Model.FechaFinUsuario.HasValue ? Model.FechaFinUsuario.Value.ToString("dd/MM/yyyy") : "-")
+            </dd>}
+        </dl>
+    </div>
+</div>
