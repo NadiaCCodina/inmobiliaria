@@ -390,7 +390,7 @@ WHERE c.id = @id;
             MySqlConnection conn = ObtenerConexion();
             {
                 string sql = "UPDATE contrato SET `fechaFinalizacionEfectiva`= NOW(), `usuarioid_baja`= 2,`baja_fecha`= NOW()" +
-                            "WHERE id = 8";
+                            "WHERE id = @id";
                 using (var command = new MySqlCommand(sql, conn))
                 {
 

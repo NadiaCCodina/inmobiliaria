@@ -148,14 +148,28 @@ namespace inmobiliaria.Controllers
                 }
                 else
                 {
-                    // TODO: Add update logic here
+                    u.Id = id;
+                    if (!string.IsNullOrWhiteSpace(u.Clave))
+                    {
+                        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                                        password: u.Clave,
+                                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                                        prf: KeyDerivationPrf.HMACSHA1,
+                                        iterationCount: 1000,
+                                        numBytesRequested: 256 / 8));
 
-                    return RedirectToAction(vista);
+
+                        u.Clave = hashed;
+                    }
+                     repositorio.Modificacion(u);
+                    TempData["Mensaje"] = "Datos guardados correctamente";
+                   return RedirectToAction(nameof(Index), "Home");
+
                 }
             }
             catch (Exception ex)
-            {//colocar breakpoints en la siguiente línea por si algo falla
-                throw;
+            {
+                throw ex;
             }
         }
 

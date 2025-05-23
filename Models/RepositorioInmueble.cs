@@ -256,20 +256,32 @@ namespace inmobiliaria.Models
 			Inmueble entidad = null;
 			MySqlConnection conn = ObtenerConexion();
 			{
-				string sql = @$" SELECT i.id, i.direccion, `ambientes`, `superficie`, `latitud`, `longitud`, `idPropietario`, `uso`, `tipo`, `precio`, p.nombre, p.apellido
-            FROM inmueble i
-			join propietario p on i.idPropietario = p.id
-            WHERE i.id = @id
-            and NOT EXISTS (
-                SELECT 1
-                FROM contrato c
-                WHERE c.IdInmueble = i.Id
-                  AND ( (@fechaI BETWEEN c.FechaInicio AND c.FechaFin)
-                     OR (@fechaF BETWEEN c.FechaInicio AND c.FechaFin)
-                     OR (c.FechaInicio BETWEEN @fechaI AND @fechaF)
-                     OR (c.FechaFin BETWEEN @fechaI AND @fechaF)
-                  )
-            );";
+				string sql = @$" SELECT 
+    i.id, i.direccion, i.ambientes, i.superficie, i.latitud, i.longitud, 
+    i.idPropietario, i.uso, i.tipo, i.precio, p.nombre, p.apellido
+FROM 
+    inmueble i
+JOIN 
+    propietario p ON i.idPropietario = p.id
+WHERE 
+    i.id = @id
+    AND NOT EXISTS (
+        SELECT 1
+        FROM contrato c
+        WHERE c.IdInmueble = i.Id
+          AND (
+                (
+                    (@fechaI BETWEEN c.FechaInicio AND c.FechaFin)
+                    OR (@fechaF BETWEEN c.FechaInicio AND c.FechaFin)
+                    OR (c.FechaInicio BETWEEN @fechaI AND @fechaF)
+                    OR (c.FechaFin BETWEEN @fechaI AND @fechaF)
+                )
+                AND (
+                    c.FechaFinalizacionEfectiva IS NULL 
+                    OR c.FechaFinalizacionEfectiva >= @fechaI
+                )
+          )
+    );";
 				using (var command = new MySqlCommand(sql, conn))
 				{
 					command.Parameters.AddWithValue("@id", id);

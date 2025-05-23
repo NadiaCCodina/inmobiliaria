@@ -107,53 +107,54 @@ namespace inmobiliaria.Controllers
 		public ActionResult Create(Contrato entidad)
 		{
 
-			try
+			// try
+			// {
+			if (ModelState.IsValid)
 			{
-				if (ModelState.IsValid)
+
+				int usuarioActualId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+				var controlF = repoInmueble.controlFechaId(entidad.InmuebleId, entidad.FechaInicio, entidad.FechaFin);
+				var precio = repoInmueble.ObtenerPorId(entidad.InmuebleId);
+				if (controlF != null)
 				{
+					entidad.UsuarioAltaId = usuarioActualId;
 
-					int usuarioActualId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+					repositorio.Alta(entidad, precio.Precio);
 
-					var controlF = repoInmueble.controlFechaId(entidad.InmuebleId, entidad.FechaInicio, entidad.FechaFin);
-					var precio = repoInmueble.ObtenerPorId(entidad.InmuebleId);
-					if (controlF != null)
+					var pendiente = "Pendiente";
+					var cantidadMeses = CalcularCantidadMeses(entidad.FechaInicio, entidad.FechaFin);
+					for (int i = 1; i < cantidadMeses + 1; i++)
 					{
-						entidad.UsuarioAltaId = usuarioActualId;
-
-						repositorio.Alta(entidad, precio.Precio);
-						//TempData["Id"] = entidad.Id;
-						var pendiente = "Pendiente";
-						var cantidadMeses = CalcularCantidadMeses(entidad.FechaInicio, entidad.FechaFin);
-						for (int i = 1; i < cantidadMeses + 1; i++)
-						{
-							repoPago.AltaAutomatico(entidad.Id, i, precio.Precio, pendiente);
-						}
-						return RedirectToAction(nameof(Index));
+						repoPago.AltaAutomatico(entidad.Id, i, precio.Precio, pendiente);
 					}
-					else
-					{
-
-						ViewBag.Inquilino = repoInquilino.ObtenerLista();
-						ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
-						TempData["Mensaje"] = "Fecha no disponible";
-						return View(entidad);
-					}
+					return RedirectToAction(nameof(Index));
 				}
 				else
 				{
+
+					ViewBag.Inquilino = repoInquilino.ObtenerLista();
+					ViewBag.Inmuebles = repoInmueble.ObtenerTodos();
+					TempData["Mensaje"] = "Fecha no disponible";
 					return View(entidad);
 				}
 			}
-			catch (Exception ex)
+			else
 			{
-				ViewBag.Error = ex.Message;
-
-				ViewBag.StackTrate = ex.StackTrace;
-				ViewBag.Inquilino = repoInquilino.ObtenerLista();
-				ViewBag.Inmueble = repoInmueble.ObtenerTodos();
 				return View(entidad);
 			}
 		}
+		// 	}
+		// 	catch (Exception ex)
+		// 	{
+		// 		ViewBag.Error = ex.Message;
+
+		// 		ViewBag.StackTrate = ex.StackTrace;
+		// 		ViewBag.Inquilino = repoInquilino.ObtenerLista();
+		// 		ViewBag.Inmueble = repoInmueble.ObtenerTodos();
+		// 		return View(entidad);
+		// 	}
+		// }
 
 		public ActionResult Edit(int id)
 		{
