@@ -21,7 +21,7 @@ namespace inmobiliaria.Models
                 string sql = @"
 					SELECT Id, Nombre, Apellido, Avatar, Email, Clave, Rol
 					FROM Usuario
-                    WHERE estado=1";
+                    ";
                 using (var command = new MySqlCommand(sql, conn))
                 {
                     command.CommandType = CommandType.Text;
@@ -108,7 +108,7 @@ namespace inmobiliaria.Models
 			int res = -1;
 			  MySqlConnection conn = ObtenerConexion();
 			{
-				string sql = "UPDATE Usuario SET Estado= 0 WHERE Id = @id";
+				string sql = "DELETE FROM `usuario` WHERE `id`= @id";
 				 using (var command = new MySqlCommand(sql, conn))
 				{
 					command.CommandType = CommandType.Text;
