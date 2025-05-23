@@ -552,16 +552,16 @@ ORDER BY
 						Contrato contrato = null;
 
 						if (!reader.IsDBNull(reader.GetOrdinal("fechaInicio")) &&
-    !reader.IsDBNull(reader.GetOrdinal("fechaFin")) &&
-    !reader.IsDBNull(reader.GetOrdinal("ContratoId")))
-{
-	contrato = new Contrato
-	{
-		Id = reader.GetInt32(reader.GetOrdinal("ContratoId")),
-		FechaInicio = reader.GetDateTime(reader.GetOrdinal("fechaInicio")),
-		FechaFin = reader.GetDateTime(reader.GetOrdinal("fechaFin")),
-	};
-}
+	!reader.IsDBNull(reader.GetOrdinal("fechaFin")) &&
+	!reader.IsDBNull(reader.GetOrdinal("ContratoId")))
+						{
+							contrato = new Contrato
+							{
+								Id = reader.GetInt32(reader.GetOrdinal("ContratoId")),
+								FechaInicio = reader.GetDateTime(reader.GetOrdinal("fechaInicio")),
+								FechaFin = reader.GetDateTime(reader.GetOrdinal("fechaFin")),
+							};
+						}
 						entidad = new Inmueble
 						{
 							Id = reader.GetInt32("InmuebleId"),

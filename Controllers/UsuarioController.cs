@@ -1,24 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
 
 using inmobiliaria.Models;
-
-using Newtonsoft.Json.Serialization;
 
 namespace inmobiliaria.Controllers
 {
@@ -241,34 +229,34 @@ namespace inmobiliaria.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-// GET: Usuarios/Delete/5
-		[Authorize(Policy = "Administrador")]
-	public ActionResult Eliminar(int id)
+        // GET: Usuarios/Delete/5
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id)
 
-		{
+        {
             var entidad = repositorio.ObtenerPorId(id);
-			return View(entidad);
-		}
+            return View(entidad);
+        }
 
-		// POST: Usuarios/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		[Authorize(Policy = "Administrador")]
-		public ActionResult Eliminar(int id, Usuario usuario)
-		{
-			try
-			{
-				repositorio.Baja(id);
-				TempData["Mensaje"] = "Eliminación realizada correctamente";
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
-		}
+        // POST: Usuarios/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id, Usuario usuario)
+        {
+            try
+            {
+                repositorio.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
 
     }
-    }
+}
 

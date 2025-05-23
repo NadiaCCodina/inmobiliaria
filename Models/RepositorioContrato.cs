@@ -68,7 +68,7 @@ namespace inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaInicio", entidad.FechaInicio);
                     command.Parameters.AddWithValue("@fechaFin", entidad.FechaFin);
                     command.Parameters.AddWithValue("@usuarioid_alta", entidad.UsuarioAltaId);
-                 
+
                     res = Convert.ToInt32(command.ExecuteScalar());
                     entidad.Id = res;
 
@@ -114,27 +114,27 @@ INNER JOIN Inmueble inmueble ON inmueble.id = c.idInmueble;
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                       Contrato entidad = new Contrato
-{
-    Id = reader.GetInt32(0),
-    Monto = reader.GetDecimal(2),
-    FechaInicio = reader.GetDateTime(3),
-    FechaFin = reader.GetDateTime(4),
-    FechaFinEfectiva = reader.IsDBNull(9) ? (DateTime?)null : reader.GetDateTime(9),
-    Pagos = reader.GetInt32(10),
+                        Contrato entidad = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            Monto = reader.GetDecimal(2),
+                            FechaInicio = reader.GetDateTime(3),
+                            FechaFin = reader.GetDateTime(4),
+                            FechaFinEfectiva = reader.IsDBNull(9) ? (DateTime?)null : reader.GetDateTime(9),
+                            Pagos = reader.GetInt32(10),
 
-    Inqui = new Inquilino
-    {
-        Nombre = reader["Nombre"] == DBNull.Value ? "" : reader.GetString(5),
-        Apellido = reader["Apellido"] == DBNull.Value ? "" : reader.GetString(6),
-        Dni = reader["Dni"] == DBNull.Value ? "" : reader.GetString(7)
-    },
-    Inmue = new Inmueble
-    {
-        Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString(1),
-        Precio = reader["Precio"] == DBNull.Value ? 0 : reader.GetInt32(8),
-    }
-};
+                            Inqui = new Inquilino
+                            {
+                                Nombre = reader["Nombre"] == DBNull.Value ? "" : reader.GetString(5),
+                                Apellido = reader["Apellido"] == DBNull.Value ? "" : reader.GetString(6),
+                                Dni = reader["Dni"] == DBNull.Value ? "" : reader.GetString(7)
+                            },
+                            Inmue = new Inmueble
+                            {
+                                Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString(1),
+                                Precio = reader["Precio"] == DBNull.Value ? 0 : reader.GetInt32(8),
+                            }
+                        };
 
 
                         res.Add(entidad);
@@ -145,7 +145,7 @@ INNER JOIN Inmueble inmueble ON inmueble.id = c.idInmueble;
             return res;
         }
 
-   public IList<Contrato> ObtenerTodosPorInmueble(int id)
+        public IList<Contrato> ObtenerTodosPorInmueble(int id)
         {
             IList<Contrato> res = new List<Contrato>();
             MySqlConnection conn = ObtenerConexion();
@@ -175,7 +175,7 @@ WHERE c.idInmueble = @id
 ";
                 using (var command = new MySqlCommand(sql, conn))
                 {
-                     command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", id);
                     command.CommandType = CommandType.Text;
 
                     var reader = command.ExecuteReader();
@@ -244,13 +244,13 @@ WHERE c.idInmueble = @id
                                 Nombre = reader["Nombre"] == DBNull.Value ? "" : reader.GetString(5),
                                 Apellido = reader["Apellido"] == DBNull.Value ? "" : reader.GetString(6),
                                 Dni = reader["Dni"] == DBNull.Value ? "" : reader.GetString(7),
-                                Id=  reader.GetInt32(8)
+                                Id = reader.GetInt32(8)
                             },
                             Inmue = new Inmueble
                             {
                                 Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString(1),
                                 Id = reader.GetInt32(9),
-                                Ambientes=  reader.GetInt32(10)
+                                Ambientes = reader.GetInt32(10)
                             }
                         };
                     }
@@ -260,7 +260,7 @@ WHERE c.idInmueble = @id
             }
         }
 
-           public Contrato ObtenerPorIdAuditoria(int id)
+        public Contrato ObtenerPorIdAuditoria(int id)
         {
             Contrato entidad = null;
             MySqlConnection conn = ObtenerConexion();
@@ -319,7 +319,7 @@ WHERE c.id = @id;
                             {
                                 Direccion = reader["Direccion"] == DBNull.Value ? "" : reader.GetString(1),
                                 Id = reader.GetInt32(9),
-                                Ambientes=  reader.GetInt32(16)
+                                Ambientes = reader.GetInt32(16)
                             },
                             UsuAlta = reader.IsDBNull(10) && reader.IsDBNull(11) ? null : new Usuario
                             {
@@ -334,7 +334,7 @@ WHERE c.id = @id;
                             },
                         };
 
-                        }
+                    }
                     return entidad;
                 }
 
@@ -389,7 +389,7 @@ WHERE c.id = @id;
             int res = -1;
             MySqlConnection conn = ObtenerConexion();
             {
-                string sql ="UPDATE contrato SET `fechaFinalizacionEfectiva`= NOW(), `usuarioid_baja`= 2,`baja_fecha`= NOW()"+
+                string sql = "UPDATE contrato SET `fechaFinalizacionEfectiva`= NOW(), `usuarioid_baja`= 2,`baja_fecha`= NOW()" +
                             "WHERE id = 8";
                 using (var command = new MySqlCommand(sql, conn))
                 {
@@ -398,7 +398,7 @@ WHERE c.id = @id;
                     // command.Parameters.AddWithValue("@fechaFin", DateTime.Now);
                     command.Parameters.AddWithValue("@id", entidad.Id);
                     command.Parameters.AddWithValue("@usuarioid_baja", entidad.UsuarioBajaId);
-                    
+
                     command.CommandType = CommandType.Text;
 
 
